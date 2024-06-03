@@ -1,5 +1,8 @@
 package com.example.application.views.contracts;
 
+import com.example.application.services.ContractService;
+import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
+import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -22,6 +25,8 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import jakarta.annotation.security.RolesAllowed;
 
+import java.sql.Timestamp;
+
 @PageTitle("Договоры")
 @Route(value = "/create-contract", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -29,19 +34,24 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class CreateContractView extends Composite<VerticalLayout> {
 
-    public CreateContractView() {
+    private final ContractService contractService;
+
+    public CreateContractView(ContractService contractService) {
+        this.contractService = contractService;
+
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout2Col = new FormLayout();
         TextField contractNumber = new TextField();
         TextField insurer = new TextField();
-        ComboBox<String> status = new ComboBox<>();
+        ComboBox<StatusEnum> status = new ComboBox<>();
         DatePicker startDateOfInsuranceCoverage = new DatePicker();
         DatePicker endDateOfInsuranceCoverage = new DatePicker();
         TextField supervisingUndewriter = new TextField();
-        TextField supervisingUOPBEmployee = new TextField();
+        TextField supervising_UOPB_employee = new TextField();
         TextField policyholder = new TextField();
         ComboBox<String> coveredCountries = new ComboBox<>();
+        ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
         TextField insuredSharePolitical = new TextField();
         TextField waitingPeriodPolitical = new TextField();
         TextField maxPoliticalCreditPeriod = new TextField();
@@ -65,15 +75,18 @@ public class CreateContractView extends Composite<VerticalLayout> {
         formLayout2Col.setWidth("100%");
         contractNumber.setLabel("Страховой номер");
         insurer.setLabel("Страховщик");
-        status.setItems("В работе", "Выполнено", "Отменено");
+        status.setItems(StatusEnum.values());
         status.setLabel("Статус");
         startDateOfInsuranceCoverage.setLabel("Дата начала страхования");
         endDateOfInsuranceCoverage.setLabel("Дата окончания страхования");
         supervisingUndewriter.setLabel("Курирующий андерайтер");
-        supervisingUOPBEmployee.setLabel("Курирующий УОПБ сотрудник");
+        supervising_UOPB_employee.setLabel("Курирующий УОПБ сотрудник");
         policyholder.setLabel("Страхователь");
-        coveredCountries.setItems("В работе", "Выполнено", "Отменено");
         coveredCountries.setLabel("Покрытые страны");
+        coveredCountries.setItems("Россия", "Украина", "Беларусь");
+
+        coveredRisks.setLabel("Покрытые риски");
+        coveredRisks.setItems(CoveredRisksEnum.values());
         insuredSharePolitical.setLabel("собственное участие Страхователя в убытке, политическое");
         waitingPeriodPolitical.setLabel("период ожидания, политический");
         maxPoliticalCreditPeriod.setLabel("макcимальный период политического кредита");
@@ -90,6 +103,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         buttonSecondary.setText("Отмена");
         buttonSecondary.setWidth("min-content");
+
         getContent().add(layoutColumn2);
         layoutColumn2.add(h3);
         layoutColumn2.add(formLayout2Col);
@@ -99,9 +113,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
         formLayout2Col.add(startDateOfInsuranceCoverage);
         formLayout2Col.add(endDateOfInsuranceCoverage);
         formLayout2Col.add(supervisingUndewriter);
-        formLayout2Col.add(supervisingUOPBEmployee);
+        formLayout2Col.add(supervising_UOPB_employee);
         formLayout2Col.add(policyholder);
         formLayout2Col.add(coveredCountries);
+        formLayout2Col.add(coveredRisks);
         formLayout2Col.add(insuredSharePolitical);
         formLayout2Col.add(waitingPeriodPolitical);
         formLayout2Col.add(maxPoliticalCreditPeriod);
@@ -113,5 +128,55 @@ public class CreateContractView extends Composite<VerticalLayout> {
         layoutColumn2.add(layoutRow);
         layoutRow.add(buttonPrimary);
         layoutRow.add(buttonSecondary);
+
+        buttonPrimary.addClickListener(e -> {
+            // Convert date to Timestamp
+            Timestamp startDate = startDateOfInsuranceCoverage.getValue() != null
+                    ? Timestamp.valueOf(startDateOfInsuranceCoverage.getValue().atStartOfDay())
+                    : null;
+            Timestamp endDate = endDateOfInsuranceCoverage.getValue() != null
+                    ? Timestamp.valueOf(endDateOfInsuranceCoverage.getValue().atStartOfDay())
+                    : null;
+
+            contractService.createContract(
+                    contractNumber.getValue(),
+                    insurer.getValue(),
+                    status.getValue(),
+                    startDate,
+                    endDate,
+                    supervisingUndewriter.getValue(),
+                    supervising_UOPB_employee.getValue(),
+                    policyholder.getValue(),
+                    coveredCountries.getValue(),
+                    coveredRisks.getValue(),
+                    insuredSharePolitical.getValue(),
+                    Integer.valueOf(waitingPeriodPolitical.getValue()),
+                    Integer.valueOf(maxPoliticalCreditPeriod.getValue()),
+                    insuredShareCommercial.getValue(),
+                    Integer.valueOf(waitingPeriodCommercial.getValue()),
+                    Integer.valueOf(maxCommercialCreditPeriod.getValue()),
+                    clientName.getValue());
+        });
+
+        buttonSecondary.addClickListener(e -> {
+            // Clear all fields or navigate away
+            contractNumber.clear();
+            insurer.clear();
+            status.clear();
+            startDateOfInsuranceCoverage.clear();
+            endDateOfInsuranceCoverage.clear();
+            supervisingUndewriter.clear();
+            supervising_UOPB_employee.clear();
+            policyholder.clear();
+            coveredCountries.clear();
+            coveredRisks.clear();
+            insuredSharePolitical.clear();
+            waitingPeriodPolitical.clear();
+            maxPoliticalCreditPeriod.clear();
+            insuredShareCommercial.clear();
+            waitingPeriodCommercial.clear();
+            maxCommercialCreditPeriod.clear();
+            clientName.clear();
+        });
     }
 }

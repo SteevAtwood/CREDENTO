@@ -19,7 +19,7 @@ public class Contract {
     private Timestamp startDateOfInsuranceCoverage;
     private Timestamp endDateOfInsuranceCoverage;
     private String supervisingUnderwriter;
-    private String supervisingUOPBEmployee;
+    private String supervising_UOPB_employee;
     private String policyholder;
     private String coveredCountries;
     private String insuredSharePolitical;
@@ -41,7 +41,7 @@ public class Contract {
 
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             Timestamp startDateOfInsuranceCoverage,
-            Timestamp endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervisingUOPBEmployee,
+            Timestamp endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxCommercialCreditPeriodPolitical, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriodCommercial, String clientName) {
@@ -51,7 +51,7 @@ public class Contract {
         this.startDateOfInsuranceCoverage = startDateOfInsuranceCoverage;
         this.endDateOfInsuranceCoverage = endDateOfInsuranceCoverage;
         this.supervisingUnderwriter = supervisingUnderwriter;
-        this.supervisingUOPBEmployee = supervisingUOPBEmployee;
+        this.supervising_UOPB_employee = supervising_UOPB_employee;
         this.policyholder = policyholder;
         this.coveredCountries = coveredCountries;
         this.coveredRisks = coveredRisks;
@@ -121,12 +121,12 @@ public class Contract {
         this.supervisingUnderwriter = supervisingUnderwriter;
     }
 
-    public String getSupervisingUOPBEmployee() {
-        return supervisingUOPBEmployee;
+    public String getSupervising_UOPB_employee() {
+        return supervising_UOPB_employee;
     }
 
-    public void setSupervisingUOPBEmployee(String supervisingUOPBEmployee) {
-        this.supervisingUOPBEmployee = supervisingUOPBEmployee;
+    public void setSupervising_UOPB_employee(String supervising_UOPB_employee) {
+        this.supervising_UOPB_employee = supervising_UOPB_employee;
     }
 
     public String getPolicyholder() {

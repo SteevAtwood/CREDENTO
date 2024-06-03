@@ -1,4 +1,4 @@
-CREATE TABLE `Contract` (
+CREATE TABLE `contract` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `insurance_contract_number` VARCHAR(255) DEFAULT NULL,
   `insurer` VARCHAR(255) DEFAULT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE `Contract` (
   `supervising_underwriter` INT DEFAULT NULL, 
   `supervising_UOPB_employee` INT DEFAULT NULL, 
   `policyholder` VARCHAR(255) DEFAULT NULL, 
-  `covered_countries` JSON DEFAULT NULL,
+  `covered_countries` TEXT DEFAULT NULL,
   `covered_risks` ENUM('political', 'commercial', 'both') DEFAULT NULL,
   `insured_share_political` VARCHAR(255) DEFAULT NULL,
   `waiting_period_political` INT DEFAULT 0,
@@ -23,7 +23,7 @@ CREATE TABLE `Contract` (
 );
 
 
-CREATE TABLE `Debtors` (
+CREATE TABLE `debtors` (
   `id` int NOT NULL AUTO_INCREMENT,
   `company_name` varchar(255) DEFAULT NULL,
   `addres` varchar(255) DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE `Debtors` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `Request` (
+CREATE TABLE `request` (
     `id` int NOT NULL AUTO_INCREMENT,
     `insurance_contract_number` varchar(255) DEFAULT NULL,
     `debitors_country` varchar(255) DEFAULT NULL,
@@ -49,11 +49,11 @@ CREATE TABLE `Request` (
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `Debtors_Contract` (
+CREATE TABLE `debtors_contract` (
   `debtor_id` int DEFAULT NULL,
   `contract_id` int DEFAULT NULL,
-  CONSTRAINT FK_debtor_id FOREIGN KEY (`debtor_id`) REFERENCES `Debtors`(`id`), 
-  CONSTRAINT FK_contract_id FOREIGN KEY (`contract_id`) REFERENCES `Contract`(`id`)
+  CONSTRAINT FK_debtor_id FOREIGN KEY (`debtor_id`) REFERENCES `debtors`(`id`), 
+  CONSTRAINT FK_contract_id FOREIGN KEY (`contract_id`) REFERENCES `contract`(`id`)
 );
 
 -- CREATE TABLE `sample_person` (
