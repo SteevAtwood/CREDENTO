@@ -1,269 +1,226 @@
-// package com.example.application.views.contracts;
+package com.example.application.views.contracts;
 
-// import com.example.application.data.SamplePerson;
-// import com.example.application.services.SamplePersonService;
-// import com.example.application.views.MainLayout;
-// import com.vaadin.flow.component.Component;
-// import com.vaadin.flow.component.Text;
-// import com.vaadin.flow.component.button.Button;
-// import com.vaadin.flow.component.button.ButtonVariant;
-// import com.vaadin.flow.component.checkbox.CheckboxGroup;
-// import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-// import com.vaadin.flow.component.datepicker.DatePicker;
-// import com.vaadin.flow.component.dependency.Uses;
-// import com.vaadin.flow.component.grid.Grid;
-// import com.vaadin.flow.component.grid.GridVariant;
-// import com.vaadin.flow.component.html.Div;
-// import com.vaadin.flow.component.html.Span;
-// import com.vaadin.flow.component.icon.Icon;
-// import com.vaadin.flow.component.orderedlayout.FlexComponent;
-// import com.vaadin.flow.component.orderedlayout.FlexLayout;
-// import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-// import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-// import com.vaadin.flow.component.textfield.TextField;
-// import com.vaadin.flow.router.PageTitle;
-// import com.vaadin.flow.router.Route;
-// import com.vaadin.flow.router.RouteAlias;
-// import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
-// import com.vaadin.flow.theme.lumo.LumoUtility;
-// import jakarta.annotation.security.RolesAllowed;
-// import jakarta.persistence.criteria.CriteriaBuilder;
-// import jakarta.persistence.criteria.CriteriaQuery;
-// import jakarta.persistence.criteria.Expression;
-// import jakarta.persistence.criteria.Predicate;
-// import jakarta.persistence.criteria.Root;
-// import java.util.ArrayList;
-// import java.util.List;
-// import org.springframework.data.domain.PageRequest;
-// import org.springframework.data.jpa.domain.Specification;
+import com.example.application.data.Contract;
+import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
+import com.example.application.data.statusEnum.StatusEnum;
+import com.example.application.services.ContractService;
+import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.*;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+import jakarta.persistence.criteria.Predicate;
 
-// @PageTitle("Договоры")
-// @Route(value = "", layout = MainLayout.class)
-// @RouteAlias(value = "", layout = MainLayout.class)
-// @RolesAllowed("ADMIN")
-// @Uses(Icon.class)
-// public class ContractsView extends Div {
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
-// private Grid<SamplePerson> grid;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
-// private Filters filters;
-// private final SamplePersonService samplePersonService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
-// public ContractsView(SamplePersonService SamplePersonService) {
-// this.samplePersonService = SamplePersonService;
-// setSizeFull();
-// addClassNames("договоры-view");
+@AnonymousAllowed
+@Route(value = "contracts", layout = MainLayout.class)
+@RouteAlias(value = "contracts", layout = MainLayout.class)
+@Uses(Icon.class)
+public class ContractsView extends Div {
 
-// filters = new Filters(() -> refreshGrid());
-// Button createContract = new Button("Создать договор");
-// createContract.setWidth("min-content");
-// createContract.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    private Grid<Contract> grid;
+    private Filters filters;
 
-// VerticalLayout layout = new VerticalLayout(createContract,
-// createMobileFilters(), filters, createGrid());
-// layout.setSizeFull();
-// layout.setPadding(false);
-// layout.setSpacing(false);
-// add(layout);
-// }
+    private final ContractService contractService;
 
-// private HorizontalLayout createMobileFilters() {
-// // Mobile version
-// HorizontalLayout mobileFilters = new HorizontalLayout();
-// mobileFilters.setWidthFull();
-// mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM,
-// LumoUtility.BoxSizing.BORDER,
-// LumoUtility.AlignItems.CENTER);
-// mobileFilters.addClassName("mobile-filters");
+    public ContractsView(ContractService contractService) {
+        this.contractService = contractService;
+        setSizeFull();
+        addClassNames("contract-view");
 
-// Icon mobileIcon = new Icon("lumo", "plus");
-// Span filtersHeading = new Span("Filters");
-// mobileFilters.add(mobileIcon, filtersHeading);
-// mobileFilters.setFlexGrow(1, filtersHeading);
-// mobileFilters.addClickListener(e -> {
-// if (filters.getClassNames().contains("visible")) {
-// filters.removeClassName("visible");
-// mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-// } else {
-// filters.addClassName("visible");
-// mobileIcon.getElement().setAttribute("icon", "lumo:minus");
-// }
-// });
-// return mobileFilters;
-// }
+        filters = new Filters(() -> refreshGrid());
+        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
+        layout.setSizeFull();
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        add(layout);
+    }
 
-// public static class Filters extends Div implements
-// Specification<SamplePerson> {
+    private HorizontalLayout createMobileFilters() {
+        // Mobile version
+        HorizontalLayout mobileFilters = new HorizontalLayout();
+        mobileFilters.setWidthFull();
+        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
+                LumoUtility.AlignItems.CENTER);
+        mobileFilters.addClassName("mobile-filters");
 
-// Button buttonPrimary = new Button("Создать договор");
-// // buttonPrimary.setText();
-// private final TextField name = new TextField("Cтрахователь");
-// private final TextField phone = new TextField("ИНН");
-// private final DatePicker startDate = new DatePicker("Срок договора");
-// private final DatePicker endDate = new DatePicker();
-// private final MultiSelectComboBox<String> occupations = new
-// MultiSelectComboBox<>("Валюта");
-// private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
+        Icon mobileIcon = new Icon("lumo");
+        Span filtersHeading = new Span("Filters");
+        mobileFilters.add(mobileIcon, filtersHeading);
+        mobileFilters.setFlexGrow(1, filtersHeading);
+        mobileFilters.addClickListener(e -> {
+            if (filters.getClassNames().contains("visible")) {
+                filters.removeClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
+            } else {
+                filters.addClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
+            }
+        });
+        return mobileFilters;
+    }
 
-// public Filters(Runnable onSearch) {
+    public static class Filters extends Div implements Specification<Contract> {
 
-// setWidthFull();
-// addClassName("filter-layout");
-// addClassNames(LumoUtility.Padding.Horizontal.LARGE,
-// LumoUtility.Padding.Vertical.MEDIUM,
-// LumoUtility.BoxSizing.BORDER);
-// name.setPlaceholder("Название страхователя");
+        private final TextField insuranceContractNumber = new TextField("Insurance Contract Number");
+        private final TextField insurer = new TextField("Insurer");
+        private final ComboBox<StatusEnum> status = new ComboBox<>("Status");
+        private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Start Date of Insurance Coverage");
+        private final DatePicker endDateOfInsuranceCoverage = new DatePicker("End Date of Insurance Coverage");
+        private final TextField policyholder = new TextField("Policyholder");
+        private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Covered Risks");
 
-// occupations.setItems("Insurance Clerk", "Mortarman", "Beer Coil Cleaner",
-// "Scale Attendant");
+        public Filters(Runnable onSearch) {
+            setWidthFull();
+            addClassName("filter-layout");
+            addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
+                    LumoUtility.BoxSizing.BORDER);
 
-// roles.setItems("Не верифицированно", "Постоянный клиент");
-// roles.addClassName("double-width");
+            status.setItems(StatusEnum.values());
+            coveredRisks.setItems(CoveredRisksEnum.values());
 
-// // Action buttons
-// Button resetBtn = new Button("Сбросить");
-// resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-// resetBtn.addClickListener(e -> {
-// name.clear();
-// phone.clear();
-// startDate.clear();
-// endDate.clear();
-// occupations.clear();
-// roles.clear();
-// onSearch.run();
-// });
-// Button searchBtn = new Button("Поиск");
-// searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-// searchBtn.addClickListener(e -> onSearch.run());
+            HorizontalLayout filterLayout = new HorizontalLayout();
+            filterLayout.setSpacing(true);
+            filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-// Div actions = new Div(resetBtn, searchBtn);
-// actions.addClassName(LumoUtility.Gap.SMALL);
-// actions.addClassName("actions");
+            filterLayout.add(insuranceContractNumber, insurer, status, createDateRangeFilter(), policyholder,
+                    coveredRisks);
 
-// add(name, phone, createDateRangeFilter(), occupations, roles, actions);
-// }
+            Button resetBtn = new Button("Reset");
+            resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            resetBtn.addClickListener(e -> {
+                insuranceContractNumber.clear();
+                insurer.clear();
+                status.clear();
+                startDateOfInsuranceCoverage.clear();
+                endDateOfInsuranceCoverage.clear();
+                policyholder.clear();
+                coveredRisks.clear();
+                onSearch.run();
+            });
 
-// private Component createDateRangeFilter() {
-// startDate.setPlaceholder("От");
+            Button searchBtn = new Button("Search");
+            searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            searchBtn.addClickListener(e -> onSearch.run());
 
-// endDate.setPlaceholder("До");
+            Div actions = new Div(resetBtn, searchBtn);
+            actions.addClassName(LumoUtility.Gap.SMALL);
+            actions.addClassName("actions");
 
-// // For screen readers
-// startDate.setAriaLabel("От даты");
-// endDate.setAriaLabel("До даты");
+            filterLayout.add(resetBtn, searchBtn);
 
-// FlexLayout dateRangeComponent = new FlexLayout(startDate, new Text(" – "),
-// endDate);
-// dateRangeComponent.setAlignItems(FlexComponent.Alignment.BASELINE);
-// dateRangeComponent.addClassName(LumoUtility.Gap.XSMALL);
+            add(filterLayout, actions);
+        }
 
-// return dateRangeComponent;
-// }
+        private Component createDateRangeFilter() {
+            startDateOfInsuranceCoverage.setPlaceholder("From");
+            endDateOfInsuranceCoverage.setPlaceholder("To");
+            startDateOfInsuranceCoverage.setAriaLabel("From date");
+            endDateOfInsuranceCoverage.setAriaLabel("To date");
 
-// @Override
-// public Predicate toPredicate(Root<SamplePerson> root, CriteriaQuery<?> query,
-// CriteriaBuilder criteriaBuilder) {
-// List<Predicate> predicates = new ArrayList<>();
+            FlexLayout dateRangeComponent = new FlexLayout(startDateOfInsuranceCoverage, new Text(" – "),
+                    endDateOfInsuranceCoverage);
+            dateRangeComponent.setAlignItems(FlexComponent.Alignment.BASELINE);
+            dateRangeComponent.addClassNames(LumoUtility.Gap.XSMALL);
 
-// if (!name.isEmpty()) {
-// String lowerCaseFilter = name.getValue().toLowerCase();
-// Predicate firstNameMatch =
-// criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")),
-// lowerCaseFilter + "%");
-// Predicate lastNameMatch =
-// criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")),
-// lowerCaseFilter + "%");
-// predicates.add(criteriaBuilder.or(firstNameMatch, lastNameMatch));
-// }
-// if (!phone.isEmpty()) {
-// String databaseColumn = "phone";
-// String ignore = "- ()";
+            return dateRangeComponent;
+        }
 
-// String lowerCaseFilter = ignoreCharacters(ignore,
-// phone.getValue().toLowerCase());
-// Predicate phoneMatch = criteriaBuilder.like(
-// ignoreCharacters(ignore, criteriaBuilder,
-// criteriaBuilder.lower(root.get(databaseColumn))),
-// "%" + lowerCaseFilter + "%");
-// predicates.add(phoneMatch);
+        @Override
+        public Predicate toPredicate(Root<Contract> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            List<Predicate> predicates = new ArrayList<>();
 
-// }
-// if (startDate.getValue() != null) {
-// String databaseColumn = "dateOfBirth";
-// predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(databaseColumn),
-// criteriaBuilder.literal(startDate.getValue())));
-// }
-// if (endDate.getValue() != null) {
-// String databaseColumn = "dateOfBirth";
-// predicates.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(endDate.getValue()),
-// root.get(databaseColumn)));
-// }
-// if (!occupations.isEmpty()) {
-// String databaseColumn = "occupation";
-// List<Predicate> occupationPredicates = new ArrayList<>();
-// for (String occupation : occupations.getValue()) {
-// occupationPredicates
-// .add(criteriaBuilder.equal(criteriaBuilder.literal(occupation),
-// root.get(databaseColumn)));
-// }
-// predicates.add(criteriaBuilder.or(occupationPredicates.toArray(Predicate[]::new)));
-// }
-// if (!roles.isEmpty()) {
-// String databaseColumn = "role";
-// List<Predicate> rolePredicates = new ArrayList<>();
-// for (String role : roles.getValue()) {
-// rolePredicates.add(criteriaBuilder.equal(criteriaBuilder.literal(role),
-// root.get(databaseColumn)));
-// }
-// predicates.add(criteriaBuilder.or(rolePredicates.toArray(Predicate[]::new)));
-// }
-// return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-// }
+            if (!insuranceContractNumber.isEmpty()) {
+                String lowerCaseFilter = insuranceContractNumber.getValue().toLowerCase();
+                Predicate contractNumberMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("insuranceContractNumber")),
+                        lowerCaseFilter + "%");
+                predicates.add(contractNumberMatch);
+            }
+            if (!insurer.isEmpty()) {
+                String lowerCaseFilter = insurer.getValue().toLowerCase();
+                Predicate insurerMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("insurer")),
+                        lowerCaseFilter + "%");
+                predicates.add(insurerMatch);
+            }
+            if (status.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status.getValue()));
+            }
+            if (startDateOfInsuranceCoverage.getValue() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("startDateOfInsuranceCoverage"),
+                        criteriaBuilder.literal(startDateOfInsuranceCoverage.getValue())));
+            }
+            if (endDateOfInsuranceCoverage.getValue() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(
+                        root.get("endDateOfInsuranceCoverage"),
+                        Timestamp.valueOf(endDateOfInsuranceCoverage.getValue().atStartOfDay().plusDays(1))));
+            }
+            if (!policyholder.isEmpty()) {
+                String lowerCaseFilter = policyholder.getValue().toLowerCase();
+                Predicate policyholderMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("policyholder")),
+                        lowerCaseFilter + "%");
+                predicates.add(policyholderMatch);
+            }
+            if (coveredRisks.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("coveredRisks"), coveredRisks.getValue()));
+            }
 
-// private String ignoreCharacters(String characters, String in) {
-// String result = in;
-// for (int i = 0; i < characters.length(); i++) {
-// result = result.replace("" + characters.charAt(i), "");
-// }
-// return result;
-// }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        }
+    }
 
-// private Expression<String> ignoreCharacters(String characters,
-// CriteriaBuilder criteriaBuilder,
-// Expression<String> inExpression) {
-// Expression<String> expression = inExpression;
-// for (int i = 0; i < characters.length(); i++) {
-// expression = criteriaBuilder.function("replace", String.class, expression,
-// criteriaBuilder.literal(characters.charAt(i)), criteriaBuilder.literal(""));
-// }
-// return expression;
-// }
+    private Component createGrid() {
+        grid = new Grid<>(Contract.class, false);
+        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Insurance Contract Number");
+        grid.addColumn("insurer").setAutoWidth(true).setHeader("Insurer");
+        grid.addColumn("status").setAutoWidth(true).setHeader("Status");
+        grid.addColumn("startDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Start Date of Insurance Coverage");
+        grid.addColumn("endDateOfInsuranceCoverage").setAutoWidth(true).setHeader("End Date of Insurance Coverage");
+        grid.addColumn("policyholder").setAutoWidth(true).setHeader("Policyholder");
+        grid.addColumn("coveredRisks").setAutoWidth(true).setHeader("Covered Risks");
 
-// }
+        grid.setItems(query -> contractService.list(
+                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
+                filters).stream());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
-// private Component createGrid() {
-// grid = new Grid<>(SamplePerson.class, false);
-// grid.addColumn("firstName").setAutoWidth(true);
-// grid.addColumn("lastName").setAutoWidth(true);
-// grid.addColumn("email").setAutoWidth(true);
-// grid.addColumn("phone").setAutoWidth(true);
-// grid.addColumn("dateOfBirth").setAutoWidth(true);
-// grid.addColumn("occupation").setAutoWidth(true);
-// grid.addColumn("role").setAutoWidth(true);
+        grid.addItemClickListener(event -> {
+            Contract selectedContract = event.getItem();
+            String contractId = String.valueOf(selectedContract.getId());
+            getUI().ifPresent(ui -> ui.navigate("contracts/" + contractId));
+            System.out.println("contracts  ВЫВОД ЧТОБЫ ВИДНО ЧТО НЕ NULL" + contractId);
+        });
 
-// grid.setItems(query -> samplePersonService.list(
-// PageRequest.of(query.getPage(), query.getPageSize(),
-// VaadinSpringDataHelpers.toSpringDataSort(query)),
-// filters).stream());
-// grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-// grid.addClassNames(LumoUtility.Border.TOP,
-// LumoUtility.BorderColor.CONTRAST_10);
+        return grid;
+    }
 
-// return grid;
-// }
-
-// private void refreshGrid() {
-// grid.getDataProvider().refreshAll();
-// }
-
-// }
+    private void refreshGrid() {
+        grid.getDataProvider().refreshAll();
+    }
+}

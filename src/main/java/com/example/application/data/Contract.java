@@ -24,10 +24,10 @@ public class Contract {
     private String coveredCountries;
     private String insuredSharePolitical;
     private Integer waitingPeriodPolitical;
-    private Integer maxCommercialCreditPeriodPolitical;
+    private Integer maxPoliticalCreditPeriod;
     private String insuredShareCommercial;
     private Integer waitingPeriodCommercial;
-    private Integer maxCommercialCreditPeriodCommercial;
+    private Integer maxCommercialCreditPeriod;
     private String clientName;
 
     @Enumerated(EnumType.STRING)
@@ -57,10 +57,10 @@ public class Contract {
         this.coveredRisks = coveredRisks;
         this.insuredSharePolitical = insuredSharePolitical;
         this.waitingPeriodPolitical = waitingPeriodPolitical;
-        this.maxCommercialCreditPeriodPolitical = maxCommercialCreditPeriodPolitical;
+        this.maxPoliticalCreditPeriod = maxCommercialCreditPeriodPolitical;
         this.insuredShareCommercial = insuredShareCommercial;
         this.waitingPeriodCommercial = waitingPeriodCommercial;
-        this.maxCommercialCreditPeriodCommercial = maxCommercialCreditPeriodCommercial;
+        this.maxCommercialCreditPeriod = maxCommercialCreditPeriodCommercial;
         this.clientName = clientName;
     }
 
@@ -169,12 +169,12 @@ public class Contract {
         this.waitingPeriodPolitical = waitingPeriodPolitical;
     }
 
-    public Integer getMaxCommercialCreditPeriodPolitical() {
-        return maxCommercialCreditPeriodPolitical;
+    public Integer getMaxPoliticalCreditPeriod() {
+        return maxPoliticalCreditPeriod;
     }
 
-    public void setMaxCommercialCreditPeriodPolitical(Integer maxCommercialCreditPeriodPolitical) {
-        this.maxCommercialCreditPeriodPolitical = maxCommercialCreditPeriodPolitical;
+    public void setMaxPoliticalCreditPeriod(Integer maxPoliticalCreditPeriod) {
+        this.maxPoliticalCreditPeriod = maxPoliticalCreditPeriod;
     }
 
     public String getInsuredShareCommercial() {
@@ -193,12 +193,12 @@ public class Contract {
         this.waitingPeriodCommercial = waitingPeriodCommercial;
     }
 
-    public Integer getMaxCommercialCreditPeriodCommercial() {
-        return maxCommercialCreditPeriodCommercial;
+    public Integer getMaxCommercialCreditPeriod() {
+        return maxCommercialCreditPeriod;
     }
 
-    public void setMaxCommercialCreditPeriodCommercial(Integer maxCommercialCreditPeriodCommercial) {
-        this.maxCommercialCreditPeriodCommercial = maxCommercialCreditPeriodCommercial;
+    public void setMaxCommercialCreditPeriod(Integer maxCommercialCreditPeriod) {
+        this.maxCommercialCreditPeriod = maxCommercialCreditPeriod;
     }
 
     public String getClientName() {

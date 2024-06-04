@@ -2,13 +2,11 @@ package com.example.application.views;
 
 import com.example.application.data.User;
 import com.example.application.security.AuthenticatedUser;
-// import com.example.application.views.applications.ApplicationsView;
 import com.example.application.views.client.ClientView;
+import com.example.application.views.contracts.ContractsView;
 import com.example.application.views.contracts.CreateContractView;
-// import com.example.application.views.contracts.ContractsView;
 import com.example.application.views.debitors.DebitorsView;
 import com.example.application.views.newApplication.NewApplicationView;
-// import com.example.application.views.users.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -89,6 +87,17 @@ public class MainLayout extends AppLayout {
                     LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
 
         }
+        if (accessChecker.hasAccess(ContractsView.class)) {
+            nav.addItem(new SideNavItem("Список контрактов", ContractsView.class,
+                    LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
+
+        }
+
+        // if (accessChecker.hasAccess(ContractDetailView.class)) {
+        // nav.addItem(new SideNavItem("Контракт", ContractDetailView.class,
+        // LineAwesomeIcon.TH_SOLID.create()));
+
+        // }
 
         if (accessChecker.hasAccess(ClientView.class)) {
             nav.addItem(new SideNavItem("Клиенты", ClientView.class, LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));

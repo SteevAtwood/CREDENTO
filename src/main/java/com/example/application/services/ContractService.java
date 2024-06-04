@@ -1,6 +1,7 @@
 package com.example.application.services;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class ContractService {
             Timestamp startDateOfInsuranceCoverage,
             Timestamp endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
-            Integer waitingPeriodPolitical, Integer maxCommercialCreditPeriodPolitical, String insuredShareCommercial,
-            Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriodCommercial, String clientName) {
+            Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
+            Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
 
         Contract contract = new Contract();
         contract.setClientName(clientName);
@@ -37,8 +38,8 @@ public class ContractService {
         contract.setInsuranceContractNumber(insuranceContractNumber);
         contract.setInsuredSharePolitical(insuredSharePolitical);
         contract.setInsurer(insurer);
-        contract.setMaxCommercialCreditPeriodCommercial(maxCommercialCreditPeriodCommercial);
-        contract.setMaxCommercialCreditPeriodPolitical(maxCommercialCreditPeriodPolitical);
+        contract.setMaxCommercialCreditPeriod(maxCommercialCreditPeriod);
+        contract.setMaxPoliticalCreditPeriod(maxPoliticalCreditPeriod);
         contract.setPolicyholder(policyholder);
         contract.setStartDateOfInsuranceCoverage(startDateOfInsuranceCoverage);
         contract.setStatus(status);
@@ -57,4 +58,26 @@ public class ContractService {
         return contractsRepository.findAll(filter, pageable);
     }
 
+    public Contract findContractById(Integer id) {
+        System.out.println("Finding contract by id: " + id);
+        Contract contract = contractsRepository.findById(id).orElse(null);
+        System.out.println("contract: " + contract);
+        System.out.println("Contract number: " +
+                contract.getInsuranceContractNumber());
+        return contract;
+    }
+
+    public Contract update(Contract entity) {
+        return contractsRepository.save(entity);
+    }
+
+    public Optional<Contract> get(Long id) {
+        return contractsRepository.findById(id);
+    }
+
+    // public Contract findContractById(Integer id) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'findContractById'");
+    // }
 }
