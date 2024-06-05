@@ -16,7 +16,8 @@ public class Request {
     private String registrationCode;
     private BigDecimal clAmount;
     private String clCurrency;
-    private String clTermAndConditions;
+    @Column(name = "cl_terms_conditions")
+    private String clTermsAndConditions;
     private String adjustmentPossibility;
 
     public Request() {
@@ -24,22 +25,18 @@ public class Request {
     }
 
     public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
-            String clCurrency, String clTermAndConditions, String adjustmentPossibility) {
+            String clCurrency, String clTermsAndConditions, String adjustmentPossibility) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.debitorsCountry = debitorsCountry;
         this.registrationCode = registrationCode;
         this.clAmount = clAmount;
         this.clCurrency = clCurrency;
-        this.clTermAndConditions = clTermAndConditions;
+        this.clTermsAndConditions = clTermsAndConditions;
         this.adjustmentPossibility = adjustmentPossibility;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getInsuranceContractNumber() {
@@ -82,12 +79,12 @@ public class Request {
         this.clCurrency = clCurrency;
     }
 
-    public String getClTermAndConditions() {
-        return clTermAndConditions;
+    public String getClTermsAndConditions() {
+        return clTermsAndConditions;
     }
 
-    public void setClTermAndConditions(String clTermAndConditions) {
-        this.clTermAndConditions = clTermAndConditions;
+    public void setClTermsAndConditions(String clTermsAndConditions) {
+        this.clTermsAndConditions = clTermsAndConditions;
     }
 
     public String getAdjustmentPossibility() {
