@@ -2,7 +2,17 @@ package com.example.application.data;
 
 public class statusEnum {
     public enum StatusEnum {
-        prospect,
-        signed_contract,
+        prospect("Проспект"),
+        signed_contract("Подписанный контракт");
+
+        private final String displayName;
+
+        StatusEnum(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.application.services;
 
-import java.sql.Timestamp;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class ContractService {
 
     @Transactional
     public Contract createContract(String insuranceContractNumber, String insurer, StatusEnum status,
-            Timestamp startDateOfInsuranceCoverage,
-            Timestamp endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
+            LocalDate startDateOfInsuranceCoverage,
+            LocalDate endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
@@ -74,10 +75,4 @@ public class ContractService {
     public Optional<Contract> get(Long id) {
         return contractsRepository.findById(id);
     }
-
-    // public Contract findContractById(Integer id) {
-    // // TODO Auto-generated method stub
-    // throw new UnsupportedOperationException("Unimplemented method
-    // 'findContractById'");
-    // }
 }

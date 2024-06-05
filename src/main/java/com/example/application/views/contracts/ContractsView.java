@@ -29,9 +29,8 @@ import jakarta.persistence.criteria.Root;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -86,7 +85,7 @@ public class ContractsView extends Div {
 
     public static class Filters extends Div implements Specification<Contract> {
 
-        private final TextField insuranceContractNumber = new TextField("Insurance Contract Number");
+        private final TextField contractNumber = new TextField("Insurance Contract Number");
         private final TextField insurer = new TextField("Insurer");
         private final ComboBox<StatusEnum> status = new ComboBox<>("Status");
         private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Start Date of Insurance Coverage");
@@ -107,13 +106,13 @@ public class ContractsView extends Div {
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(insuranceContractNumber, insurer, status, createDateRangeFilter(), policyholder,
+            filterLayout.add(contractNumber, insurer, status, createDateRangeFilter(), policyholder,
                     coveredRisks);
 
             Button resetBtn = new Button("Reset");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
-                insuranceContractNumber.clear();
+                contractNumber.clear();
                 insurer.clear();
                 status.clear();
                 startDateOfInsuranceCoverage.clear();
@@ -154,8 +153,8 @@ public class ContractsView extends Div {
         public Predicate toPredicate(Root<Contract> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (!insuranceContractNumber.isEmpty()) {
-                String lowerCaseFilter = insuranceContractNumber.getValue().toLowerCase();
+            if (!contractNumber.isEmpty()) {
+                String lowerCaseFilter = contractNumber.getValue().toLowerCase();
                 Predicate contractNumberMatch = criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("insuranceContractNumber")),
                         lowerCaseFilter + "%");
@@ -178,7 +177,7 @@ public class ContractsView extends Div {
             if (endDateOfInsuranceCoverage.getValue() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(
                         root.get("endDateOfInsuranceCoverage"),
-                        Timestamp.valueOf(endDateOfInsuranceCoverage.getValue().atStartOfDay().plusDays(1))));
+                        java.sql.Date.valueOf(endDateOfInsuranceCoverage.getValue().plusDays(1))));
             }
             if (!policyholder.isEmpty()) {
                 String lowerCaseFilter = policyholder.getValue().toLowerCase();

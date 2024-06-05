@@ -1,6 +1,6 @@
 package com.example.application.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
@@ -16,8 +16,8 @@ public class Contract {
 
     private String insuranceContractNumber;
     private String insurer;
-    private Timestamp startDateOfInsuranceCoverage;
-    private Timestamp endDateOfInsuranceCoverage;
+    private LocalDate startDateOfInsuranceCoverage;
+    private LocalDate endDateOfInsuranceCoverage;
     private String supervisingUnderwriter;
     private String supervising_UOPB_employee;
     private String policyholder;
@@ -40,8 +40,8 @@ public class Contract {
     }
 
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
-            Timestamp startDateOfInsuranceCoverage,
-            Timestamp endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
+            LocalDate startDateOfInsuranceCoverage,
+            LocalDate endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxCommercialCreditPeriodPolitical, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriodCommercial, String clientName) {
@@ -97,19 +97,19 @@ public class Contract {
         this.status = status;
     }
 
-    public Timestamp getStartDateOfInsuranceCoverage() {
+    public LocalDate getStartDateOfInsuranceCoverage() {
         return startDateOfInsuranceCoverage;
     }
 
-    public void setStartDateOfInsuranceCoverage(Timestamp startDateOfInsuranceCoverage) {
+    public void setStartDateOfInsuranceCoverage(LocalDate startDateOfInsuranceCoverage) {
         this.startDateOfInsuranceCoverage = startDateOfInsuranceCoverage;
     }
 
-    public Timestamp getEndDateOfInsuranceCoverage() {
+    public LocalDate getEndDateOfInsuranceCoverage() {
         return endDateOfInsuranceCoverage;
     }
 
-    public void setEndDateOfInsuranceCoverage(Timestamp endDateOfInsuranceCoverage) {
+    public void setEndDateOfInsuranceCoverage(LocalDate endDateOfInsuranceCoverage) {
         this.endDateOfInsuranceCoverage = endDateOfInsuranceCoverage;
     }
 

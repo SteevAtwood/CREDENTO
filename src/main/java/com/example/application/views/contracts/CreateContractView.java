@@ -1,6 +1,10 @@
 package com.example.application.views.contracts;
 
 import com.example.application.services.ContractService;
+
+import java.sql.Date;
+
+import com.example.application.data.DateConversionUtil;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.views.MainLayout;
@@ -25,8 +29,6 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import jakarta.annotation.security.RolesAllowed;
 
-import java.sql.Timestamp;
-
 @PageTitle("Договоры")
 @Route(value = "/create-contract", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -42,11 +44,12 @@ public class CreateContractView extends Composite<VerticalLayout> {
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout2Col = new FormLayout();
-        TextField contractNumber = new TextField();
+        TextField insuranceContractNumber = new TextField();
         TextField insurer = new TextField();
-        ComboBox<StatusEnum> status = new ComboBox<>();
         DatePicker startDateOfInsuranceCoverage = new DatePicker();
         DatePicker endDateOfInsuranceCoverage = new DatePicker();
+        ComboBox<StatusEnum> status = new ComboBox<>();
+
         TextField supervisingUndewriter = new TextField();
         TextField supervising_UOPB_employee = new TextField();
         TextField policyholder = new TextField();
@@ -73,9 +76,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
         h3.setText("Создание нового договора");
         h3.setWidth("100%");
         formLayout2Col.setWidth("100%");
-        contractNumber.setLabel("Страховой номер");
+        insuranceContractNumber.setLabel("Страховой номер");
         insurer.setLabel("Страховщик");
         status.setItems(StatusEnum.values());
+        status.setItemLabelGenerator(StatusEnum::getDisplayName);
         status.setLabel("Статус");
         startDateOfInsuranceCoverage.setLabel("Дата начала страхования");
         endDateOfInsuranceCoverage.setLabel("Дата окончания страхования");
@@ -87,12 +91,13 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         coveredRisks.setLabel("Покрытые риски");
         coveredRisks.setItems(CoveredRisksEnum.values());
-        insuredSharePolitical.setLabel("собственное участие Страхователя в убытке, политическое");
-        waitingPeriodPolitical.setLabel("период ожидания, политический");
-        maxPoliticalCreditPeriod.setLabel("макcимальный период политического кредита");
-        insuredShareCommercial.setLabel("собственное участие Страхователя в убытке, коммерческое");
-        waitingPeriodCommercial.setLabel("период ожидания, коммерческий");
-        maxCommercialCreditPeriod.setLabel("макcимальный период коммерческого кредита");
+        coveredRisks.setItemLabelGenerator(CoveredRisksEnum::getDisplayName);
+        insuredSharePolitical.setLabel("Политическое участие Страхователя в убытке");
+        waitingPeriodPolitical.setLabel("Политический период ожидания");
+        maxPoliticalCreditPeriod.setLabel("Макcимальный период политического кредита");
+        insuredShareCommercial.setLabel("Коммерческое участие Страхователя в убытке");
+        waitingPeriodCommercial.setLabel("Коммерческий период ожидания");
+        maxCommercialCreditPeriod.setLabel("Макcимальный период коммерческиеого кредита");
         clientName.setLabel("Имя клиента");
 
         layoutRow.addClassName(Gap.MEDIUM);
@@ -107,11 +112,12 @@ public class CreateContractView extends Composite<VerticalLayout> {
         getContent().add(layoutColumn2);
         layoutColumn2.add(h3);
         layoutColumn2.add(formLayout2Col);
-        formLayout2Col.add(contractNumber);
+        formLayout2Col.add(insuranceContractNumber);
         formLayout2Col.add(insurer);
-        formLayout2Col.add(status);
         formLayout2Col.add(startDateOfInsuranceCoverage);
         formLayout2Col.add(endDateOfInsuranceCoverage);
+        formLayout2Col.add(status);
+
         formLayout2Col.add(supervisingUndewriter);
         formLayout2Col.add(supervising_UOPB_employee);
         formLayout2Col.add(policyholder);
@@ -130,20 +136,19 @@ public class CreateContractView extends Composite<VerticalLayout> {
         layoutRow.add(buttonSecondary);
 
         buttonPrimary.addClickListener(e -> {
-            // Convert date to Timestamp
-            Timestamp startDate = startDateOfInsuranceCoverage.getValue() != null
-                    ? Timestamp.valueOf(startDateOfInsuranceCoverage.getValue().atStartOfDay())
+            Date startDate = startDateOfInsuranceCoverage.getValue() != null
+                    ? Date.valueOf(startDateOfInsuranceCoverage.getValue())
                     : null;
-            Timestamp endDate = endDateOfInsuranceCoverage.getValue() != null
-                    ? Timestamp.valueOf(endDateOfInsuranceCoverage.getValue().atStartOfDay())
+            Date endDate = endDateOfInsuranceCoverage.getValue() != null
+                    ? Date.valueOf(endDateOfInsuranceCoverage.getValue())
                     : null;
 
             contractService.createContract(
-                    contractNumber.getValue(),
+                    insuranceContractNumber.getValue(),
                     insurer.getValue(),
                     status.getValue(),
-                    startDate,
-                    endDate,
+                    DateConversionUtil.toLocalDate(startDate),
+                    DateConversionUtil.toLocalDate(endDate),
                     supervisingUndewriter.getValue(),
                     supervising_UOPB_employee.getValue(),
                     policyholder.getValue(),
@@ -160,7 +165,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         buttonSecondary.addClickListener(e -> {
             // Clear all fields or navigate away
-            contractNumber.clear();
+            insuranceContractNumber.clear();
             insurer.clear();
             status.clear();
             startDateOfInsuranceCoverage.clear();
