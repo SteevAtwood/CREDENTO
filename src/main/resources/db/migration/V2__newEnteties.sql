@@ -26,10 +26,10 @@ CREATE TABLE `contract` (
 CREATE TABLE `debtors` (
   `id` int NOT NULL AUTO_INCREMENT,
   `company_name` varchar(255) DEFAULT NULL,
-  `addres` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   `information_provider_code` varchar(255) DEFAULT NULL,
   `company_registration_codes` varchar(255) DEFAULT NULL,
-  `OKVED_code` varchar(255) DEFAULT NULL,
+  `okved_code` varchar(255) DEFAULT NULL,
   `debtor_company_email` varchar(255) DEFAULT NULL,
   `company_status` TEXT DEFAULT NULL,
   `owner_information` TEXT DEFAULT NULL,
@@ -42,9 +42,9 @@ CREATE TABLE `request` (
     `insurance_contract_number` varchar(255) DEFAULT NULL,
     `debitors_country` varchar(255) DEFAULT NULL,
     `registration_code` varchar(255) DEFAULT NULL,
-    `CL_amount` DECIMAL(10,2) DEFAULT 0.00,
-    `CL_currency` varchar(255) DEFAULT NULL,
-    `CL_terms_conditions` TEXT DEFAULT NULL,
+    `cl_amount` DECIMAL(10,2) DEFAULT 0.00,
+    `cl_currency` varchar(255) DEFAULT NULL,
+    `cl_terms_conditions` TEXT DEFAULT NULL,
     `adjustment_possibility` TEXT DEFAULT NULL,
     PRIMARY KEY (`id`)
 );

@@ -29,7 +29,6 @@ import jakarta.persistence.criteria.Root;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
-import java.sql.*;
 import java.util.*;
 
 import org.springframework.data.domain.PageRequest;

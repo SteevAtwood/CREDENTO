@@ -40,10 +40,6 @@ public class Debtors {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getCompanyName() {
         return companyName;
     }
@@ -115,4 +111,5 @@ public class Debtors {
     public void setContactPersonDetails(String contactPersonDetails) {
         this.contactPersonDetails = contactPersonDetails;
     }
+
 }

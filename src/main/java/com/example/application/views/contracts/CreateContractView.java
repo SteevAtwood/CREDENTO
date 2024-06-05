@@ -30,8 +30,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Договоры")
-@Route(value = "/create-contract", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "create-contract", layout = MainLayout.class)
+@RouteAlias(value = "create-contract", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 @Uses(Icon.class)
 public class CreateContractView extends Composite<VerticalLayout> {

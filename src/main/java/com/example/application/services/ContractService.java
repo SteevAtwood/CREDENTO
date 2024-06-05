@@ -1,6 +1,5 @@
 package com.example.application.services;
 
-import java.sql.*;
 import java.time.LocalDate;
 import java.util.Optional;
 

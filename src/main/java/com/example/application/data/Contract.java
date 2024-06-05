@@ -43,8 +43,8 @@ public class Contract {
             LocalDate startDateOfInsuranceCoverage,
             LocalDate endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
-            Integer waitingPeriodPolitical, Integer maxCommercialCreditPeriodPolitical, String insuredShareCommercial,
-            Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriodCommercial, String clientName) {
+            Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
+            Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.insurer = insurer;
         this.status = status;
@@ -57,20 +57,15 @@ public class Contract {
         this.coveredRisks = coveredRisks;
         this.insuredSharePolitical = insuredSharePolitical;
         this.waitingPeriodPolitical = waitingPeriodPolitical;
-        this.maxPoliticalCreditPeriod = maxCommercialCreditPeriodPolitical;
+        this.maxPoliticalCreditPeriod = maxPoliticalCreditPeriod;
         this.insuredShareCommercial = insuredShareCommercial;
         this.waitingPeriodCommercial = waitingPeriodCommercial;
-        this.maxCommercialCreditPeriod = maxCommercialCreditPeriodCommercial;
+        this.maxCommercialCreditPeriod = maxCommercialCreditPeriod;
         this.clientName = clientName;
     }
 
-    // Getters and setters
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getInsuranceContractNumber() {

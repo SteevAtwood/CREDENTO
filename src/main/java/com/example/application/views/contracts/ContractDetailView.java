@@ -42,7 +42,7 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
     private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
     private final DatePicker endDateOfInsuranceCoverage = new DatePicker("Дата окончания страхования");
     private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
-    private final TextField supervisingUndewriter = new TextField("Курирующий андерайтер");
+    private final TextField supervisingUnderwriter = new TextField("Курирующий андерайтер");
     private final TextField supervising_UOPB_employee = new TextField("урирующий УОПБ сотрудник");
     private final TextField policyholder = new TextField("Страхователь");
     private final ComboBox<String> coveredCountries = new ComboBox<>("Покрытые страны");
@@ -67,7 +67,7 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
         formLayout.setWidth("100%");
         formLayout.add(insuranceContractNumber, insurer, startDateOfInsuranceCoverage,
                 endDateOfInsuranceCoverage, status,
-                supervisingUndewriter, supervising_UOPB_employee, policyholder, coveredCountries, coveredRisks,
+                supervisingUnderwriter, supervising_UOPB_employee, policyholder, coveredCountries, coveredRisks,
                 insuredSharePolitical, waitingPeriodPolitical, maxPoliticalCreditPeriod, insuredShareCommercial,
                 waitingPeriodCommercial, maxCommercialCreditPeriod, clientName);
 

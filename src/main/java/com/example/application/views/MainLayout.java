@@ -6,6 +6,8 @@ import com.example.application.views.client.ClientView;
 import com.example.application.views.contracts.ContractsView;
 import com.example.application.views.contracts.CreateContractView;
 import com.example.application.views.debitors.DebitorsView;
+import com.example.application.views.debtors.CreateDebtorView;
+import com.example.application.views.debtors.DebtorsView;
 import com.example.application.views.newApplication.NewApplicationView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -72,16 +74,6 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        // if (accessChecker.hasAccess(ContractsView.class)) {
-        // nav.addItem(new SideNavItem("Договоры", ContractsView.class,
-        // LineAwesomeIcon.ADDRESS_CARD.create()));
-
-        // }
-        // if (accessChecker.hasAccess(ApplicationsView.class)) {
-        // nav.addItem(new SideNavItem("Заявки", ApplicationsView.class,
-        // LineAwesomeIcon.COLUMNS_SOLID.create()));
-
-        // }
         if (accessChecker.hasAccess(CreateContractView.class)) {
             nav.addItem(new SideNavItem("Создать контракт", CreateContractView.class,
                     LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
@@ -92,12 +84,15 @@ public class MainLayout extends AppLayout {
                     LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
 
         }
+        if (accessChecker.hasAccess(CreateDebtorView.class)) {
+            nav.addItem(new SideNavItem("Создать дебитора", CreateDebtorView.class, LineAwesomeIcon.USER.create()));
 
-        // if (accessChecker.hasAccess(ContractDetailView.class)) {
-        // nav.addItem(new SideNavItem("Контракт", ContractDetailView.class,
-        // LineAwesomeIcon.TH_SOLID.create()));
-
-        // }
+        }
+        if (accessChecker.hasAccess(DebtorsView.class)) {
+            nav.addItem(
+                    new SideNavItem("Список дебиторов", DebtorsView.class,
+                            LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
+        }
 
         if (accessChecker.hasAccess(ClientView.class)) {
             nav.addItem(new SideNavItem("Клиенты", ClientView.class, LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
@@ -111,12 +106,6 @@ public class MainLayout extends AppLayout {
             nav.addItem(new SideNavItem("Новая заявка", NewApplicationView.class, LineAwesomeIcon.USER.create()));
 
         }
-        // if (accessChecker.hasAccess(UserView.class)) {
-        // nav.addItem(
-        // new SideNavItem("Пользователи", UserView.class,
-        // LineAwesomeIcon.COLUMNS_SOLID.create()));
-
-        // }
 
         return nav;
     }
