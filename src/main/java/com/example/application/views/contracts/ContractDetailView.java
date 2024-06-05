@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.application.data.Contract;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
+import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.ContractService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -24,6 +25,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.component.dialog.Dialog;
 
 @AnonymousAllowed
 @Route(value = "contracts/:id", layout = MainLayout.class)
@@ -33,6 +35,7 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
     @Autowired
     private final ContractService contractService;
     private Contract contract;
+    private Dialog confirmDialog;
 
     private final TextField insuranceContractNumber = new TextField("Страховой номер");
     private final TextField insurer = new TextField("Страховщик");
@@ -54,6 +57,7 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     private final Button cancel = new Button("Отмена");
     private final Button save = new Button("Сохранить");
+    private final Button delete = new Button("Удалить");
     private final BeanValidationBinder<Contract> binder;
 
     public ContractDetailView(ContractService contractService) {
@@ -81,15 +85,22 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
                 }
                 binder.writeBean(this.contract);
                 contractService.update(this.contract);
-                clearForm();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(ContractDetailView.class);
+                Notification.show("Данные успешно обновлены");
             } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
+                Notification.show("Не удалось обновить данные. Проверьте, что все значения допустимы");
             }
         });
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel);
+        delete.addClickListener(e -> {
+            if (this.contract != null) {
+                confirmDialog = new ConfirmationDialog(
+                        "Вы действительно хотите удалить контракт " + this.contract.getInsuranceContractNumber() + "?",
+                        this::deleteContract);
+                confirmDialog.open();
+            }
+        });
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel, delete);
         add(buttonLayout);
     }
 
@@ -123,6 +134,15 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     private void clearForm() {
         populateForm(null);
+    }
+
+    private void deleteContract() {
+        if (this.contract != null) {
+            contractService.deleteContractById(this.contract.getId());
+            clearForm();
+            Notification.show("Контракт удален");
+            UI.getCurrent().navigate(ContractsView.class);
+        }
     }
 
 }

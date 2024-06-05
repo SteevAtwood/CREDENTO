@@ -75,4 +75,9 @@ public class ContractService {
     public Optional<Contract> get(Long id) {
         return contractsRepository.findById(id);
     }
+
+    @Transactional
+    public void deleteContractById(Integer id) {
+        contractsRepository.deleteById(id);
+    }
 }

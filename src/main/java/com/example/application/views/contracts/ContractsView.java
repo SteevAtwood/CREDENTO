@@ -85,13 +85,13 @@ public class ContractsView extends Div {
 
     public static class Filters extends Div implements Specification<Contract> {
 
-        private final TextField contractNumber = new TextField("Insurance Contract Number");
-        private final TextField insurer = new TextField("Insurer");
-        private final ComboBox<StatusEnum> status = new ComboBox<>("Status");
-        private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Start Date of Insurance Coverage");
-        private final DatePicker endDateOfInsuranceCoverage = new DatePicker("End Date of Insurance Coverage");
-        private final TextField policyholder = new TextField("Policyholder");
-        private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Covered Risks");
+        private final TextField contractNumber = new TextField("Страховой номер");
+        private final TextField insurer = new TextField("Страховщик");
+        private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
+        private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
+        private final DatePicker endDateOfInsuranceCoverage = new DatePicker("Дата окончания страхования");
+        private final TextField policyholder = new TextField("Страхователь");
+        private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Покрытые риски");
 
         public Filters(Runnable onSearch) {
             setWidthFull();
@@ -109,7 +109,7 @@ public class ContractsView extends Div {
             filterLayout.add(contractNumber, insurer, status, createDateRangeFilter(), policyholder,
                     coveredRisks);
 
-            Button resetBtn = new Button("Reset");
+            Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
                 contractNumber.clear();
@@ -122,7 +122,7 @@ public class ContractsView extends Div {
                 onSearch.run();
             });
 
-            Button searchBtn = new Button("Search");
+            Button searchBtn = new Button("Найти");
             searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             searchBtn.addClickListener(e -> onSearch.run());
 
@@ -136,10 +136,10 @@ public class ContractsView extends Div {
         }
 
         private Component createDateRangeFilter() {
-            startDateOfInsuranceCoverage.setPlaceholder("From");
-            endDateOfInsuranceCoverage.setPlaceholder("To");
-            startDateOfInsuranceCoverage.setAriaLabel("From date");
-            endDateOfInsuranceCoverage.setAriaLabel("To date");
+            startDateOfInsuranceCoverage.setPlaceholder("От");
+            endDateOfInsuranceCoverage.setPlaceholder("До");
+            startDateOfInsuranceCoverage.setAriaLabel("От даты");
+            endDateOfInsuranceCoverage.setAriaLabel("До даты");
 
             FlexLayout dateRangeComponent = new FlexLayout(startDateOfInsuranceCoverage, new Text(" – "),
                     endDateOfInsuranceCoverage);
@@ -195,13 +195,13 @@ public class ContractsView extends Div {
 
     private Component createGrid() {
         grid = new Grid<>(Contract.class, false);
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Insurance Contract Number");
-        grid.addColumn("insurer").setAutoWidth(true).setHeader("Insurer");
-        grid.addColumn("status").setAutoWidth(true).setHeader("Status");
-        grid.addColumn("startDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Start Date of Insurance Coverage");
-        grid.addColumn("endDateOfInsuranceCoverage").setAutoWidth(true).setHeader("End Date of Insurance Coverage");
-        grid.addColumn("policyholder").setAutoWidth(true).setHeader("Policyholder");
-        grid.addColumn("coveredRisks").setAutoWidth(true).setHeader("Covered Risks");
+        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
+        grid.addColumn("insurer").setAutoWidth(true).setHeader("Страховщик");
+        grid.addColumn("status").setAutoWidth(true).setHeader("Статус");
+        grid.addColumn("startDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Дата начала страхования");
+        grid.addColumn("endDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Дата окончания страхования");
+        grid.addColumn("policyholder").setAutoWidth(true).setHeader("Страхователь");
+        grid.addColumn("coveredRisks").setAutoWidth(true).setHeader("Покрытые риски");
 
         grid.setItems(query -> contractService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
