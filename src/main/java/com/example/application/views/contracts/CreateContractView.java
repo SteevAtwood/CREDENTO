@@ -1,10 +1,16 @@
 package com.example.application.views.contracts;
 
 import com.example.application.services.ContractService;
+import com.example.application.services.UserService;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.DateConversionUtil;
+import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.views.MainLayout;
@@ -37,9 +43,12 @@ import jakarta.annotation.security.RolesAllowed;
 public class CreateContractView extends Composite<VerticalLayout> {
 
     private final ContractService contractService;
+    @Autowired
+    private final UserService userService;
 
-    public CreateContractView(ContractService contractService) {
+    public CreateContractView(ContractService contractService, UserService userService) {
         this.contractService = contractService;
+        this.userService = userService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
@@ -50,8 +59,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
         DatePicker endDateOfInsuranceCoverage = new DatePicker();
         ComboBox<StatusEnum> status = new ComboBox<>();
 
-        TextField supervisingUndewriter = new TextField();
-        TextField supervising_UOPB_employee = new TextField();
+        ComboBox<String> supervisingUndewriter = new ComboBox<>();
+        ComboBox<String> supervising_UOPB_employee = new ComboBox<>();
         TextField policyholder = new TextField();
         ComboBox<String> coveredCountries = new ComboBox<>();
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
@@ -84,9 +93,19 @@ public class CreateContractView extends Composite<VerticalLayout> {
         startDateOfInsuranceCoverage.setLabel("Дата начала страхования");
         endDateOfInsuranceCoverage.setLabel("Дата окончания страхования");
         supervisingUndewriter.setLabel("Курирующий андерайтер");
+        List<User> mainUnderwriters = userService.getUsersWithRoleMainUndewtirher();
+        List<String> mainUnderwriterNames = mainUnderwriters.stream()
+                .map(User::getName)
+                .collect(Collectors.toList());
+        supervisingUndewriter.setItems(mainUnderwriterNames);
         supervising_UOPB_employee.setLabel("Курирующий УОПБ сотрудник");
+        List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBemployee();
+        List<String> mainUOPBemployeesNames = mainUOPBemployees.stream()
+                .map(User::getName)
+                .collect(Collectors.toList());
+        supervising_UOPB_employee.setItems(mainUOPBemployeesNames);
         policyholder.setLabel("Страхователь");
-        coveredCountries.setLabel("Покрытые страны");
+        coveredCountries.setLabel("Страны покрытия");
         coveredCountries.setItems("Россия", "Украина", "Беларусь");
 
         coveredRisks.setLabel("Покрытые риски");

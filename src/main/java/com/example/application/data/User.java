@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.util.Set;
+import com.example.application.data.positionEnum.PositionEnum;;
 
 @Entity
 @Table(name = "user")
@@ -18,6 +19,10 @@ public class User extends AbstractEntity {
     @Column(name = "user_name")
     private String username;
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    private PositionEnum position;
+
     @JsonIgnore
     private String hashedPassword;
     @Enumerated(EnumType.STRING)
@@ -41,6 +46,14 @@ public class User extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PositionEnum getPosition() {
+        return position;
+    }
+
+    public void setPosition(PositionEnum position) {
+        this.position = position;
     }
 
     public String getHashedPassword() {

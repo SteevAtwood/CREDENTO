@@ -10,6 +10,8 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -49,6 +51,9 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         Button cancelButton = new Button("Отмена");
 
         getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
+        getContent().setJustifyContentMode(JustifyContentMode.START);
+        getContent().setAlignItems(Alignment.CENTER);
         layoutColumn2.setWidth("100%");
         layoutColumn2.setMaxWidth("800px");
         layoutColumn2.setHeight("min-content");
@@ -58,7 +63,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
 
         companyName.setLabel("Название компании");
         address.setLabel("Адрес");
-        informationProviderCode.setLabel("Код поставщика информации");
+        informationProviderCode.setLabel("Код информационного провайдера");
         companyRegistrationCodes.setLabel("Регистрационные коды компании");
         okvedCode.setLabel("Код ОКВЭД");
         debtorCompanyEmail.setLabel("Email компании дебитора");

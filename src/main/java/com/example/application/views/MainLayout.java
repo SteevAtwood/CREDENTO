@@ -105,18 +105,21 @@ public class MainLayout extends AppLayout {
                             LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
         }
 
-        if (accessChecker.hasAccess(ClientView.class)) {
-            nav.addItem(new SideNavItem("Клиенты", ClientView.class, LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
+        // if (accessChecker.hasAccess(ClientView.class)) {
+        // nav.addItem(new SideNavItem("Клиенты", ClientView.class,
+        // LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
 
-        }
-        if (accessChecker.hasAccess(DebitorsView.class)) {
-            nav.addItem(new SideNavItem("Дебиторы", DebitorsView.class, LineAwesomeIcon.TH_SOLID.create()));
+        // }
+        // if (accessChecker.hasAccess(DebitorsView.class)) {
+        // nav.addItem(new SideNavItem("Дебиторы", DebitorsView.class,
+        // LineAwesomeIcon.TH_SOLID.create()));
 
-        }
-        if (accessChecker.hasAccess(NewApplicationView.class)) {
-            nav.addItem(new SideNavItem("Новая заявка", NewApplicationView.class, LineAwesomeIcon.USER.create()));
+        // }
+        // if (accessChecker.hasAccess(NewApplicationView.class)) {
+        // nav.addItem(new SideNavItem("Новая заявка", NewApplicationView.class,
+        // LineAwesomeIcon.USER.create()));
 
-        }
+        // }
 
         return nav;
     }
