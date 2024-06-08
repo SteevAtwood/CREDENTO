@@ -1,5 +1,6 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.services.RequestService;
 
 import java.math.BigDecimal;
@@ -46,6 +47,7 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         ComboBox<String> clCurrency = new ComboBox<>();
         TextField clTermsAndConditions = new TextField();
         TextField adjustmentPossibility = new TextField();
+        ComboBox<RequestStatusEnum> status = new ComboBox<>();
 
         HorizontalLayout layoutRow = new HorizontalLayout();
         Button buttonPrimary = new Button();
@@ -67,6 +69,9 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         clCurrency.setLabel("Валюта CL");
         clCurrency.setItems("RUB", "USD", "EUR");
         clTermsAndConditions.setLabel("Условия CL");
+        status.setItems(RequestStatusEnum.values());
+        status.setItemLabelGenerator(RequestStatusEnum::getDisplayName);
+        status.setLabel("Статус");
         adjustmentPossibility.setLabel("Возможность корректировки");
 
         layoutRow.addClassName(Gap.MEDIUM);
@@ -88,6 +93,7 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         formLayout2Col.add(clCurrency);
         formLayout2Col.add(clTermsAndConditions);
         formLayout2Col.add(adjustmentPossibility);
+        formLayout2Col.add(status);
 
         layoutColumn2.add(layoutRow);
         layoutRow.add(buttonPrimary);
@@ -103,6 +109,7 @@ public class CreateRequestView extends Composite<VerticalLayout> {
                     clCurrency.getValue(),
                     clTermsAndConditions.getValue(),
                     adjustmentPossibility.getValue());
+            status.getValue();
         });
 
         buttonSecondary.addClickListener(e -> {
@@ -114,6 +121,7 @@ public class CreateRequestView extends Composite<VerticalLayout> {
             clCurrency.clear();
             clTermsAndConditions.clear();
             adjustmentPossibility.clear();
+            status.clear();
         });
     }
 }

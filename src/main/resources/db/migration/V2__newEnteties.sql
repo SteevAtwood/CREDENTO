@@ -46,6 +46,7 @@ CREATE TABLE `request` (
     `cl_currency` varchar(255) DEFAULT NULL,
     `cl_terms_conditions` TEXT DEFAULT NULL,
     `adjustment_possibility` TEXT DEFAULT NULL,
+    `status` ENUM('pending', 'accepted', 'declined') DEFAULT NULL,
     PRIMARY KEY (`id`)
 );
 

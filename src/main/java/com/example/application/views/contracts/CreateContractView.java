@@ -19,19 +19,24 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -64,10 +69,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
         TextField policyholder = new TextField();
         ComboBox<String> coveredCountries = new ComboBox<>();
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
-        TextField insuredSharePolitical = new TextField();
+        IntegerField insuredSharePolitical = new IntegerField();
         TextField waitingPeriodPolitical = new TextField();
         TextField maxPoliticalCreditPeriod = new TextField();
-        TextField insuredShareCommercial = new TextField();
+        IntegerField insuredShareCommercial = new IntegerField();
         TextField waitingPeriodCommercial = new TextField();
         TextField maxCommercialCreditPeriod = new TextField();
         TextField clientName = new TextField();
@@ -111,10 +116,62 @@ public class CreateContractView extends Composite<VerticalLayout> {
         coveredRisks.setLabel("Покрытые риски");
         coveredRisks.setItems(CoveredRisksEnum.values());
         coveredRisks.setItemLabelGenerator(CoveredRisksEnum::getDisplayName);
+
         insuredSharePolitical.setLabel("Политическое участие Страхователя в убытке");
+        insuredSharePolitical.setValue(0);
+        insuredSharePolitical.setStepButtonsVisible(true);
+        insuredSharePolitical.setMin(0);
+        insuredSharePolitical.setMax(100);
+        insuredSharePolitical.setSuffixComponent(new Span("%"));
+        insuredSharePolitical.setValueChangeMode(ValueChangeMode.EAGER);
+        Registration valueChangeListenerPolitical = insuredSharePolitical.addValueChangeListener(event -> {
+            Integer value = event.getValue();
+            if (value != null) {
+                String valueString = value.toString();
+                if (value < 0) {
+                    insuredSharePolitical.setValue(0);
+                    Notification.show("Значение не может быть меньше 0");
+                } else if (valueString.length() > 3) {
+                    String newValueString = valueString.substring(0, 3);
+                    insuredSharePolitical.setValue(Integer.valueOf(newValueString));
+                    Notification.show("Значение не может содержать более 3 символов");
+                } else if (value > 100) {
+                    insuredSharePolitical.setValue(100);
+                    Notification.show("Значение не может быть больше 100");
+                }
+            }
+        });
+
+        addDetachListener(detachEvent -> valueChangeListenerPolitical.remove());
+
         waitingPeriodPolitical.setLabel("Политический период ожидания");
         maxPoliticalCreditPeriod.setLabel("Макcимальный период политического кредита");
         insuredShareCommercial.setLabel("Коммерческое участие Страхователя в убытке");
+        insuredShareCommercial.setValue(0);
+        insuredShareCommercial.setStepButtonsVisible(true);
+        insuredShareCommercial.setMin(0);
+        insuredShareCommercial.setMax(100);
+        insuredShareCommercial.setSuffixComponent(new Span("%"));
+        insuredShareCommercial.setValueChangeMode(ValueChangeMode.EAGER);
+        Registration valueChangeListenerCommercial = insuredShareCommercial.addValueChangeListener(event -> {
+            Integer value = event.getValue();
+            if (value != null) {
+                String valueString = value.toString();
+                if (value < 0) {
+                    insuredShareCommercial.setValue(0);
+                    Notification.show("Значение не может быть меньше 0");
+                } else if (valueString.length() > 3) {
+                    String newValueString = valueString.substring(0, 3);
+                    insuredShareCommercial.setValue(Integer.valueOf(newValueString));
+                    Notification.show("Значение не может содержать более 3 символов");
+                } else if (value > 100) {
+                    insuredShareCommercial.setValue(100);
+                    Notification.show("Значение не может быть больше 100");
+                }
+            }
+        });
+        addDetachListener(detachEvent -> valueChangeListenerCommercial.remove());
+
         waitingPeriodCommercial.setLabel("Коммерческий период ожидания");
         maxCommercialCreditPeriod.setLabel("Макcимальный период коммерческиеого кредита");
         clientName.setLabel("Имя клиента");
@@ -173,10 +230,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     policyholder.getValue(),
                     coveredCountries.getValue(),
                     coveredRisks.getValue(),
-                    insuredSharePolitical.getValue(),
+                    insuredSharePolitical.getValue().toString(),
                     Integer.valueOf(waitingPeriodPolitical.getValue()),
                     Integer.valueOf(maxPoliticalCreditPeriod.getValue()),
-                    insuredShareCommercial.getValue(),
+                    insuredShareCommercial.getValue().toString(),
                     Integer.valueOf(waitingPeriodCommercial.getValue()),
                     Integer.valueOf(maxCommercialCreditPeriod.getValue()),
                     clientName.getValue());

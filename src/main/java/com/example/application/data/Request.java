@@ -2,6 +2,8 @@ package com.example.application.data;
 
 import java.math.BigDecimal;
 
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -20,12 +22,15 @@ public class Request {
     private String clTermsAndConditions;
     private String adjustmentPossibility;
 
+    @Enumerated(EnumType.STRING)
+    private RequestStatusEnum status;
+
     public Request() {
 
     }
 
     public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
-            String clCurrency, String clTermsAndConditions, String adjustmentPossibility) {
+            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.debitorsCountry = debitorsCountry;
         this.registrationCode = registrationCode;
@@ -33,6 +38,7 @@ public class Request {
         this.clCurrency = clCurrency;
         this.clTermsAndConditions = clTermsAndConditions;
         this.adjustmentPossibility = adjustmentPossibility;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -93,5 +99,13 @@ public class Request {
 
     public void setAdjustmentPossibility(String adjustmentPossibility) {
         this.adjustmentPossibility = adjustmentPossibility;
+    }
+
+    public RequestStatusEnum getRequestStatus() {
+        return status;
+    }
+
+    public void setRequestStatus(RequestStatusEnum status) {
+        this.status = status;
     }
 }
