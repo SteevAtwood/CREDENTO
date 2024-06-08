@@ -1,6 +1,6 @@
 package com.example.application.services;
 
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,16 @@ public class DebtorService {
             String companyRegistrationCodes, String okvedCode, String debtorCompanyEmail, String companyStatus,
             String ownerInformation, String contactPersonDetails) {
 
-        Debtors debtor = new Debtors(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode,
-                debtorCompanyEmail, companyStatus, ownerInformation, contactPersonDetails);
+        Debtors debtor = new Debtors();
+        debtor.setAddress(address);
+        debtor.setCompanyName(companyName);
+        debtor.setCompanyRegistrationCodes(companyRegistrationCodes);
+        debtor.setCompanyStatus(companyStatus);
+        debtor.setContactPersonDetails(contactPersonDetails);
+        debtor.setDebtorCompanyEmail(debtorCompanyEmail);
+        debtor.setInformationProviderCode(informationProviderCode);
+        debtor.setOkvedCode(okvedCode);
+        debtor.setOwnerInformation(ownerInformation);
         return debtorRepository.save(debtor);
     }
 
@@ -57,5 +65,9 @@ public class DebtorService {
     @Transactional
     public void deleteDebtorById(Integer id) {
         debtorRepository.deleteById(id);
+    }
+
+    public List<Debtors> getDebtors() {
+        return debtorRepository.findAll();
     }
 }

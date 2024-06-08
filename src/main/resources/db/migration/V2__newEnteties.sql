@@ -47,7 +47,9 @@ CREATE TABLE `request` (
     `cl_terms_conditions` TEXT DEFAULT NULL,
     `adjustment_possibility` TEXT DEFAULT NULL,
     `status` ENUM('pending', 'accepted', 'declined') DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    `debtor` INT DEFAULT NULL, 
+    PRIMARY KEY (`id`),
+    CONSTRAINT FK_debtor_request FOREIGN KEY (`debtor`) REFERENCES `debtors`(`id`)
 );
 
 CREATE TABLE `debtors_contract` (

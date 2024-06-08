@@ -44,12 +44,22 @@ public class UserService {
         return (int) userRepository.count();
     }
 
-    public List<User> getUsersWithRoleMainUndewtirher() {
-        return userRepository.getUsersWithRoleMainUndewtirher();
+    public List<User> getUsersWithRoleMainUnderwriter() {
+        return userRepository.getUsersWithRoleMainUnderwriter();
     }
 
-    public List<User> getUsersWithRoleSupervisingUOPBemployee() {
-        return userRepository.getUsersWithRoleSupervisingUOPBemployee();
+    public List<User> getUsersWithRoleSupervisingUOPBEmployee() {
+        return userRepository.getUsersWithRoleSupervisingUOPBEmployee();
     }
 
+    public int getUserIdByName(String name) {
+        User user = userRepository.findByName(name);
+        if (user != null) {
+            return user.getId();
+        } else {
+
+            return 0;
+        }
+
+    }
 }

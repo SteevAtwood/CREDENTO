@@ -1,20 +1,18 @@
 package com.example.application.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
 import java.util.Set;
-import com.example.application.data.positionEnum.PositionEnum;;
+import com.example.application.data.positionEnum.PositionEnum;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user")
 public class User extends AbstractEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "user_name")
     private String username;
@@ -31,6 +29,23 @@ public class User extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] profilePicture;
+
+    public User() {
+    }
+
+    public User(String username, String name, PositionEnum position, String hashedPassword, Set<Role> roles,
+            byte[] profilePicture) {
+        this.username = username;
+        this.name = name;
+        this.position = position;
+        this.hashedPassword = hashedPassword;
+        this.roles = roles;
+        this.profilePicture = profilePicture;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 
     public String getUsername() {
         return username;

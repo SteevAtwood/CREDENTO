@@ -10,15 +10,17 @@ import com.example.application.data.User;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    User findByUsername(String username);
+  User findByUsername(String username);
 
-    @Query(nativeQuery = true, value = """
-              select * from user where position = 'mainUndewrither'
-            """)
-    List<User> getUsersWithRoleMainUndewtirher();
+  @Query(nativeQuery = true, value = """
+        select * from user where position = 'mainUndewrither'
+      """)
+  List<User> getUsersWithRoleMainUnderwriter();
 
-    @Query(nativeQuery = true, value = """
-              select * from user where position = 'supervisingUOPBemployee'
-            """)
-    List<User> getUsersWithRoleSupervisingUOPBemployee();
+  @Query(nativeQuery = true, value = """
+        select * from user where position = 'supervisingUOPBemployee'
+      """)
+  List<User> getUsersWithRoleSupervisingUOPBEmployee();
+
+  User findByName(String name);
 }

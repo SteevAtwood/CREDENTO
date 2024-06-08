@@ -5,9 +5,6 @@ import com.example.application.services.UserService;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.DateConversionUtil;
 import com.example.application.data.User;
@@ -48,7 +45,6 @@ import jakarta.annotation.security.RolesAllowed;
 public class CreateContractView extends Composite<VerticalLayout> {
 
     private final ContractService contractService;
-    @Autowired
     private final UserService userService;
 
     public CreateContractView(ContractService contractService, UserService userService) {
@@ -64,8 +60,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
         DatePicker endDateOfInsuranceCoverage = new DatePicker();
         ComboBox<StatusEnum> status = new ComboBox<>();
 
-        ComboBox<String> supervisingUndewriter = new ComboBox<>();
-        ComboBox<String> supervising_UOPB_employee = new ComboBox<>();
+        ComboBox<User> supervisingUnderwriter = new ComboBox<>();
+        ComboBox<User> supervisingUOPBEmployee = new ComboBox<>();
         TextField policyholder = new TextField();
         ComboBox<String> coveredCountries = new ComboBox<>();
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
@@ -97,18 +93,16 @@ public class CreateContractView extends Composite<VerticalLayout> {
         status.setLabel("Статус");
         startDateOfInsuranceCoverage.setLabel("Дата начала страхования");
         endDateOfInsuranceCoverage.setLabel("Дата окончания страхования");
-        supervisingUndewriter.setLabel("Курирующий андерайтер");
-        List<User> mainUnderwriters = userService.getUsersWithRoleMainUndewtirher();
-        List<String> mainUnderwriterNames = mainUnderwriters.stream()
-                .map(User::getName)
-                .collect(Collectors.toList());
-        supervisingUndewriter.setItems(mainUnderwriterNames);
-        supervising_UOPB_employee.setLabel("Курирующий УОПБ сотрудник");
-        List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBemployee();
-        List<String> mainUOPBemployeesNames = mainUOPBemployees.stream()
-                .map(User::getName)
-                .collect(Collectors.toList());
-        supervising_UOPB_employee.setItems(mainUOPBemployeesNames);
+        supervisingUnderwriter.setLabel("Курирующий андерайтер");
+        List<User> mainUnderwriters = userService.getUsersWithRoleMainUnderwriter();
+        supervisingUnderwriter.setItems(mainUnderwriters);
+        supervisingUnderwriter.setItemLabelGenerator(User::getName);
+
+        supervisingUOPBEmployee.setLabel("Курирующий УОПБ сотрудник");
+        List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBEmployee();
+        supervisingUOPBEmployee.setItems(mainUOPBemployees);
+        supervisingUOPBEmployee.setItemLabelGenerator(User::getName);
+
         policyholder.setLabel("Страхователь");
         coveredCountries.setLabel("Страны покрытия");
         coveredCountries.setItems("Россия", "Украина", "Беларусь");
@@ -122,6 +116,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         insuredSharePolitical.setStepButtonsVisible(true);
         insuredSharePolitical.setMin(0);
         insuredSharePolitical.setMax(100);
+        insuredSharePolitical.setStep(5);
         insuredSharePolitical.setSuffixComponent(new Span("%"));
         insuredSharePolitical.setValueChangeMode(ValueChangeMode.EAGER);
         Registration valueChangeListenerPolitical = insuredSharePolitical.addValueChangeListener(event -> {
@@ -151,6 +146,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         insuredShareCommercial.setStepButtonsVisible(true);
         insuredShareCommercial.setMin(0);
         insuredShareCommercial.setMax(100);
+        insuredShareCommercial.setStep(5);
         insuredShareCommercial.setSuffixComponent(new Span("%"));
         insuredShareCommercial.setValueChangeMode(ValueChangeMode.EAGER);
         Registration valueChangeListenerCommercial = insuredShareCommercial.addValueChangeListener(event -> {
@@ -194,8 +190,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
         formLayout2Col.add(endDateOfInsuranceCoverage);
         formLayout2Col.add(status);
 
-        formLayout2Col.add(supervisingUndewriter);
-        formLayout2Col.add(supervising_UOPB_employee);
+        formLayout2Col.add(supervisingUnderwriter);
+        formLayout2Col.add(supervisingUOPBEmployee);
         formLayout2Col.add(policyholder);
         formLayout2Col.add(coveredCountries);
         formLayout2Col.add(coveredRisks);
@@ -219,14 +215,18 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     ? Date.valueOf(endDateOfInsuranceCoverage.getValue())
                     : null;
 
+            Integer supervisingUnderwriterId = userService.getUserIdByName(supervisingUnderwriter.getValue().getName());
+            Integer supervisingUOPBEmployeeId = userService
+                    .getUserIdByName(supervisingUOPBEmployee.getValue().getName());
+
             contractService.createContract(
                     insuranceContractNumber.getValue(),
                     insurer.getValue(),
                     status.getValue(),
                     DateConversionUtil.toLocalDate(startDate),
                     DateConversionUtil.toLocalDate(endDate),
-                    supervisingUndewriter.getValue(),
-                    supervising_UOPB_employee.getValue(),
+                    supervisingUnderwriterId,
+                    supervisingUOPBEmployeeId,
                     policyholder.getValue(),
                     coveredCountries.getValue(),
                     coveredRisks.getValue(),
@@ -246,8 +246,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
             status.clear();
             startDateOfInsuranceCoverage.clear();
             endDateOfInsuranceCoverage.clear();
-            supervisingUndewriter.clear();
-            supervising_UOPB_employee.clear();
+            supervisingUnderwriter.clear();
+            supervisingUOPBEmployee.clear();
             policyholder.clear();
             coveredCountries.clear();
             coveredRisks.clear();

@@ -23,30 +23,44 @@ public class ContractService {
     ContractsRepository contractsRepository;
 
     @Transactional
-    public Contract createContract(String insuranceContractNumber, String insurer, StatusEnum status,
+    public Contract createContract(
+            String insuranceContractNumber,
+            String insurer,
+            StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
-            LocalDate endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
-            String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
-            Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
-            Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
+            LocalDate endDateOfInsuranceCoverage,
+            Integer supervisingUnderwriter,
+            Integer supervisingUOPBEmployee,
+            String policyholder,
+            String coveredCountries,
+            CoveredRisksEnum coveredRisks,
+            String insuredSharePolitical,
+            Integer waitingPeriodPolitical,
+            Integer maxPoliticalCreditPeriod,
+            String insuredShareCommercial,
+            Integer waitingPeriodCommercial,
+            Integer maxCommercialCreditPeriod,
+            String clientName) {
 
         Contract contract = new Contract();
-        contract.setClientName(clientName);
+        contract.setInsuranceContractNumber(insuranceContractNumber);
+        contract.setInsurer(insurer);
+        contract.setStatus(status);
+        contract.setStartDateOfInsuranceCoverage(startDateOfInsuranceCoverage);
+        contract.setEndDateOfInsuranceCoverage(endDateOfInsuranceCoverage);
+        contract.setSupervisingUnderwriter(supervisingUnderwriter);
+        contract.setSupervising_UOPB_employee(supervisingUOPBEmployee);
+        contract.setPolicyholder(policyholder);
         contract.setCoveredCountries(coveredCountries);
         contract.setCoveredRisks(coveredRisks);
-        contract.setEndDateOfInsuranceCoverage(endDateOfInsuranceCoverage);
-        contract.setInsuranceContractNumber(insuranceContractNumber);
         contract.setInsuredSharePolitical(insuredSharePolitical);
-        contract.setInsurer(insurer);
-        contract.setMaxCommercialCreditPeriod(maxCommercialCreditPeriod);
-        contract.setMaxPoliticalCreditPeriod(maxPoliticalCreditPeriod);
-        contract.setPolicyholder(policyholder);
-        contract.setStartDateOfInsuranceCoverage(startDateOfInsuranceCoverage);
-        contract.setStatus(status);
-        contract.setSupervising_UOPB_employee(supervising_UOPB_employee);
-        contract.setSupervisingUnderwriter(supervisingUnderwriter);
-        contract.setWaitingPeriodCommercial(waitingPeriodCommercial);
         contract.setWaitingPeriodPolitical(waitingPeriodPolitical);
+        contract.setMaxPoliticalCreditPeriod(maxPoliticalCreditPeriod);
+        contract.setInsuredShareCommercial(insuredShareCommercial);
+        contract.setWaitingPeriodCommercial(waitingPeriodCommercial);
+        contract.setMaxCommercialCreditPeriod(maxCommercialCreditPeriod);
+        contract.setClientName(clientName);
+
         return contractsRepository.save(contract);
     }
 

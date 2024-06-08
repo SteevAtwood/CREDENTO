@@ -1,9 +1,15 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Debtors;
+import com.example.application.data.User;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -33,14 +39,17 @@ import jakarta.annotation.security.RolesAllowed;
 public class CreateRequestView extends Composite<VerticalLayout> {
 
     private final RequestService requestService;
+    private final DebtorService debtorService;
 
-    public CreateRequestView(RequestService requestService) {
+    public CreateRequestView(RequestService requestService, DebtorService debtorService) {
         this.requestService = requestService;
+        this.debtorService = debtorService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout2Col = new FormLayout();
         TextField insuranceContractNumber = new TextField();
+        ComboBox<String> debtor = new ComboBox<>();
         TextField debitorsCountry = new TextField();
         TextField registrationCode = new TextField();
         TextField clAmount = new TextField();
@@ -63,6 +72,14 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         h3.setWidth("100%");
         formLayout2Col.setWidth("100%");
         insuranceContractNumber.setLabel("Страховой номер");
+
+        debtor.setLabel("Дебитор");
+        List<Debtors> debtors = debtorService.getDebtors();
+        List<String> debtorsCompanyNumber = debtors.stream()
+                .map(Debtors::getCompanyRegistrationCodes)
+                .collect(Collectors.toList());
+        debtor.setItems(debtorsCompanyNumber);
+
         debitorsCountry.setLabel("Страна дебитора");
         registrationCode.setLabel("Регистрационный код");
         clAmount.setLabel("Сумма CL");
@@ -88,6 +105,7 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         layoutColumn2.add(formLayout2Col);
         formLayout2Col.add(insuranceContractNumber);
         formLayout2Col.add(debitorsCountry);
+        formLayout2Col.add(debtor);
         formLayout2Col.add(registrationCode);
         formLayout2Col.add(clAmount);
         formLayout2Col.add(clCurrency);
@@ -108,14 +126,16 @@ public class CreateRequestView extends Composite<VerticalLayout> {
                     amount,
                     clCurrency.getValue(),
                     clTermsAndConditions.getValue(),
-                    adjustmentPossibility.getValue());
-            status.getValue();
+                    adjustmentPossibility.getValue(),
+                    status.getValue());
+            // debtor.getValue());
         });
 
         buttonSecondary.addClickListener(e -> {
             // Clear all fields or navigate away
             insuranceContractNumber.clear();
             debitorsCountry.clear();
+            debtor.clear();
             registrationCode.clear();
             clAmount.clear();
             clCurrency.clear();

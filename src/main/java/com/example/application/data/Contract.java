@@ -18,8 +18,8 @@ public class Contract {
     private String insurer;
     private LocalDate startDateOfInsuranceCoverage;
     private LocalDate endDateOfInsuranceCoverage;
-    private String supervisingUnderwriter;
-    private String supervising_UOPB_employee;
+    private Integer supervisingUnderwriter;
+    private Integer supervising_UOPB_employee;
     private String policyholder;
     private String coveredCountries;
     private String insuredSharePolitical;
@@ -37,11 +37,12 @@ public class Contract {
     private CoveredRisksEnum coveredRisks;
 
     public Contract() {
+
     }
 
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
-            LocalDate endDateOfInsuranceCoverage, String supervisingUnderwriter, String supervising_UOPB_employee,
+            LocalDate endDateOfInsuranceCoverage, Integer supervisingUnderwriter, Integer supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
@@ -108,19 +109,19 @@ public class Contract {
         this.endDateOfInsuranceCoverage = endDateOfInsuranceCoverage;
     }
 
-    public String getSupervisingUnderwriter() {
+    public Integer getSupervisingUnderwriter() {
         return supervisingUnderwriter;
     }
 
-    public void setSupervisingUnderwriter(String supervisingUnderwriter) {
+    public void setSupervisingUnderwriter(Integer supervisingUnderwriter) {
         this.supervisingUnderwriter = supervisingUnderwriter;
     }
 
-    public String getSupervising_UOPB_employee() {
+    public Integer getSupervising_UOPB_employee() {
         return supervising_UOPB_employee;
     }
 
-    public void setSupervising_UOPB_employee(String supervising_UOPB_employee) {
+    public void setSupervising_UOPB_employee(Integer supervising_UOPB_employee) {
         this.supervising_UOPB_employee = supervising_UOPB_employee;
     }
 

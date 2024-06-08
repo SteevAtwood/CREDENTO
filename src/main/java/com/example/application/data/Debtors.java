@@ -20,6 +20,7 @@ public class Debtors {
     private String contactPersonDetails;
 
     public Debtors() {
+
     }
 
     public Debtors(String companyName, String address, String informationProviderCode, String companyRegistrationCodes,

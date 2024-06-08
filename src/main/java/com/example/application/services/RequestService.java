@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.Request;
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.repository.RequestRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class RequestService {
     @Transactional
     public Request createRequest(String insuranceContractNumber, String debitorsCountry, String registrationCode,
             BigDecimal clAmount,
-            String clCurrency, String clTermsAndConditions, String adjustmentPossibility) {
+            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status) {
 
         Request request = new Request();
         request.setInsuranceContractNumber(insuranceContractNumber);
@@ -33,6 +34,8 @@ public class RequestService {
         request.setClCurrency(clCurrency);
         request.setClTermsAndConditions(clTermsAndConditions);
         request.setAdjustmentPossibility(adjustmentPossibility);
+        request.setRequestStatus(status);
+        // request.setDebtor(debtor);
         return requestRepository.save(request);
     }
 
@@ -44,8 +47,15 @@ public class RequestService {
         return requestRepository.findAll(filter, pageable);
     }
 
+    public Page<Request> listAcceptedRequests(Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByDebtor(pageable);
+    }
+
+    public Page<Request> listAcceptedRequests(Specification<Request> filter, Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByDebtor(pageable);
+    }
+
     public Request findRequestById(Integer id) {
-        System.out.println("Finding request by id: " + id);
         return requestRepository.findById(id).orElse(null);
     }
 
