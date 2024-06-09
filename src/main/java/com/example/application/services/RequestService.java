@@ -47,13 +47,14 @@ public class RequestService {
         return requestRepository.findAll(filter, pageable);
     }
 
-    public Page<Request> listAcceptedRequests(Pageable pageable) {
-        return requestRepository.getAcceptedRequestsByDebtor(pageable);
-    }
+    // public Page<Request> listAcceptedRequests(Pageable pageable) {
+    // return requestRepository.getAcceptedRequestsByRegistrationCode(pageable);
+    // }
 
-    public Page<Request> listAcceptedRequests(Specification<Request> filter, Pageable pageable) {
-        return requestRepository.getAcceptedRequestsByDebtor(pageable);
-    }
+    // public Page<Request> listAcceptedRequests(Specification<Request> filter,
+    // Pageable pageable) {
+    // return requestRepository.getAcceptedRequestsByRegistrationCode(pageable);
+    // }
 
     public Request findRequestById(Integer id) {
         return requestRepository.findById(id).orElse(null);
@@ -70,5 +71,9 @@ public class RequestService {
     @Transactional
     public void deleteRequestById(Integer id) {
         requestRepository.deleteById(id);
+    }
+
+    public Page<Request> getAcceptedRequestsByRegistrationCode(String registrationCode, Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByRegistrationCode(registrationCode, pageable);
     }
 }

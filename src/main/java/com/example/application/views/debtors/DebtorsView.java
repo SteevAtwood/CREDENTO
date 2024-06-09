@@ -44,18 +44,9 @@ public class DebtorsView extends Div {
         this.grid = createGrid();
         this.filters = new Filters(this::refreshGrid);
 
-        Button openRequestViewButton = createOpenRequestViewButton();
-        VerticalLayout layout = new VerticalLayout(filters, grid, openRequestViewButton);
+        VerticalLayout layout = new VerticalLayout(filters, grid);
         layout.setSizeFull();
         add(layout);
-    }
-
-    private Button createOpenRequestViewButton() {
-        Button button = new Button("Открыть заявки", event -> {
-            getUI().ifPresent(ui -> ui.navigate("requests"));
-        });
-        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        return button;
     }
 
     public static class Filters extends Div implements Specification<Debtors> {
