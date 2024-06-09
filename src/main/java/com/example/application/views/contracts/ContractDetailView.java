@@ -1,14 +1,16 @@
 package com.example.application.views.contracts;
 
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.Contract;
+import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.ContractService;
+import com.example.application.services.UserService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -42,8 +44,8 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
     private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
     private final DatePicker endDateOfInsuranceCoverage = new DatePicker("Дата окончания страхования");
     private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
-    private final TextField supervisingUnderwriter = new TextField("Курирующий андерайтер");
-    private final TextField supervising_UOPB_employee = new TextField("урирующий УОПБ сотрудник");
+    private final ComboBox<User> supervisingUnderwriter = new ComboBox<>("Курирующий андерайтер");
+    private final ComboBox<User> supervising_UOPB_employee = new ComboBox<>("Курирующий УОПБ сотрудник");
     private final TextField policyholder = new TextField("Страхователь");
     private final ComboBox<String> coveredCountries = new ComboBox<>("Покрытые страны");
     private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Покрытые риски");
@@ -60,8 +62,11 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
     private final Button delete = new Button("Удалить");
     private final BeanValidationBinder<Contract> binder;
 
-    public ContractDetailView(ContractService contractService) {
+    private final UserService userService;
+
+    public ContractDetailView(ContractService contractService, UserService userService) {
         this.contractService = contractService;
+        this.userService = userService;
 
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
@@ -106,7 +111,6 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        System.out.println("beforeEnter called");
         Optional<String> contractId = event.getRouteParameters().get("id");
         if (contractId.isPresent()) {
             Integer id = Integer.valueOf(contractId.get());
@@ -123,6 +127,16 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     private void populateForm(Contract contract) {
         this.contract = contract;
+
+        List<User> mainUnderwriters = userService.getUsersWithRoleMainUnderwriter();
+        supervisingUnderwriter.setItems(mainUnderwriters);
+        supervisingUnderwriter.setItemLabelGenerator(User::getName);
+        supervisingUnderwriter.setValue(contract.getSupervisingUnderwriter());
+
+        List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBEmployee();
+        supervising_UOPB_employee.setItems(mainUOPBemployees);
+        supervising_UOPB_employee.setItemLabelGenerator(User::getName);
+        supervising_UOPB_employee.setValue(contract.getSupervising_UOPB_employee());
 
         status.setItems(StatusEnum.values());
         status.setItemLabelGenerator(StatusEnum::getDisplayName);

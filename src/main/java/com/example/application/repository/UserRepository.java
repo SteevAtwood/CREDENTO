@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.application.data.User;
 
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
   User findByUsername(String username);
 
@@ -23,4 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
   List<User> getUsersWithRoleSupervisingUOPBEmployee();
 
   User findByName(String name);
+
 }

@@ -4,7 +4,6 @@ import com.example.application.data.User;
 import com.example.application.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +19,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> get(Long id) {
-        return userRepository.findById(id);
+    public User get(Integer id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     public User update(User entity) {
         return userRepository.save(entity);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         userRepository.deleteById(id);
     }
 
@@ -52,14 +51,24 @@ public class UserService {
         return userRepository.getUsersWithRoleSupervisingUOPBEmployee();
     }
 
-    public int getUserIdByName(String name) {
+    public Integer getUserIdByName(String name) {
         User user = userRepository.findByName(name);
         if (user != null) {
             return user.getId();
         } else {
-
             return 0;
         }
-
     }
+
+    public User getUserById(Integer id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    // public User getUserByName(String userName) {
+    // for (User user : userList) {
+    // if (user.getName().equals(userName)) {
+    // return user;
+    // }
+    // }
+    // return null;
 }

@@ -18,8 +18,13 @@ public class Contract {
     private String insurer;
     private LocalDate startDateOfInsuranceCoverage;
     private LocalDate endDateOfInsuranceCoverage;
-    private Integer supervisingUnderwriter;
-    private Integer supervising_UOPB_employee;
+    @ManyToOne
+    @JoinColumn(name = "supervising_underwriter", referencedColumnName = "id")
+    private User supervisingUnderwriter;
+
+    @ManyToOne
+    @JoinColumn(name = "supervising_UOPB_employee", referencedColumnName = "id")
+    private User supervising_UOPB_employee;
     private String policyholder;
     private String coveredCountries;
     private String insuredSharePolitical;
@@ -42,7 +47,7 @@ public class Contract {
 
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
-            LocalDate endDateOfInsuranceCoverage, Integer supervisingUnderwriter, Integer supervising_UOPB_employee,
+            LocalDate endDateOfInsuranceCoverage, User supervisingUnderwriter, User supervising_UOPB_employee,
             String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
@@ -109,19 +114,19 @@ public class Contract {
         this.endDateOfInsuranceCoverage = endDateOfInsuranceCoverage;
     }
 
-    public Integer getSupervisingUnderwriter() {
+    public User getSupervisingUnderwriter() {
         return supervisingUnderwriter;
     }
 
-    public void setSupervisingUnderwriter(Integer supervisingUnderwriter) {
+    public void setSupervisingUnderwriter(User supervisingUnderwriter) {
         this.supervisingUnderwriter = supervisingUnderwriter;
     }
 
-    public Integer getSupervising_UOPB_employee() {
+    public User getSupervising_UOPB_employee() {
         return supervising_UOPB_employee;
     }
 
-    public void setSupervising_UOPB_employee(Integer supervising_UOPB_employee) {
+    public void setSupervising_UOPB_employee(User supervising_UOPB_employee) {
         this.supervising_UOPB_employee = supervising_UOPB_employee;
     }
 

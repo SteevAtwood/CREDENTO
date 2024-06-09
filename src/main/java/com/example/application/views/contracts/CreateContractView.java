@@ -116,7 +116,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         insuredSharePolitical.setStepButtonsVisible(true);
         insuredSharePolitical.setMin(0);
         insuredSharePolitical.setMax(100);
-        insuredSharePolitical.setStep(5);
+        insuredSharePolitical.setStep(1);
         insuredSharePolitical.setSuffixComponent(new Span("%"));
         insuredSharePolitical.setValueChangeMode(ValueChangeMode.EAGER);
         Registration valueChangeListenerPolitical = insuredSharePolitical.addValueChangeListener(event -> {
@@ -146,7 +146,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         insuredShareCommercial.setStepButtonsVisible(true);
         insuredShareCommercial.setMin(0);
         insuredShareCommercial.setMax(100);
-        insuredShareCommercial.setStep(5);
+        insuredShareCommercial.setStep(1);
         insuredShareCommercial.setSuffixComponent(new Span("%"));
         insuredShareCommercial.setValueChangeMode(ValueChangeMode.EAGER);
         Registration valueChangeListenerCommercial = insuredShareCommercial.addValueChangeListener(event -> {
@@ -214,10 +214,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
             Date endDate = endDateOfInsuranceCoverage.getValue() != null
                     ? Date.valueOf(endDateOfInsuranceCoverage.getValue())
                     : null;
-
-            Integer supervisingUnderwriterId = userService.getUserIdByName(supervisingUnderwriter.getValue().getName());
-            Integer supervisingUOPBEmployeeId = userService
-                    .getUserIdByName(supervisingUOPBEmployee.getValue().getName());
+            User selectedSupervisingUnderwriter = supervisingUnderwriter.getValue();
+            User selectedSupervisingUOPBEmployee = supervisingUOPBEmployee.getValue();
 
             contractService.createContract(
                     insuranceContractNumber.getValue(),
@@ -225,8 +223,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     status.getValue(),
                     DateConversionUtil.toLocalDate(startDate),
                     DateConversionUtil.toLocalDate(endDate),
-                    supervisingUnderwriterId,
-                    supervisingUOPBEmployeeId,
+                    selectedSupervisingUnderwriter,
+                    selectedSupervisingUOPBEmployee,
                     policyholder.getValue(),
                     coveredCountries.getValue(),
                     coveredRisks.getValue(),
@@ -237,6 +235,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     Integer.valueOf(waitingPeriodCommercial.getValue()),
                     Integer.valueOf(maxCommercialCreditPeriod.getValue()),
                     clientName.getValue());
+
         });
 
         buttonSecondary.addClickListener(e -> {
