@@ -32,7 +32,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 @AnonymousAllowed
-@Route(value = "requests/:registrationCode", layout = MainLayout.class)
+@Route(value = "accepted-requests/:registrationCode", layout = MainLayout.class)
 @Uses(Icon.class)
 public class RequestsSuccessView extends Div implements BeforeEnterObserver {
 
