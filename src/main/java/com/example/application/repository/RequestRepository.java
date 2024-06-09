@@ -14,4 +14,9 @@ public interface RequestRepository extends JpaRepository<Request, Integer>, JpaS
           select * from request where status = 'accepted' and registration_code = :registrationCode
       """)
   Page<Request> getAcceptedRequestsByRegistrationCode(String registrationCode, Pageable pageable);
+
+  @Query(nativeQuery = true, value = """
+          select * from request where status = 'pending' and registration_code = :registrationCode
+      """)
+  Page<Request> getPendingRequestsByRegistrationCode(String registrationCode, Pageable pageable);
 }

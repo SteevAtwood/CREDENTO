@@ -9,6 +9,7 @@ import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.DebtorService;
 import com.example.application.views.MainLayout;
+import com.example.application.views.requests.RequestsPendingView;
 import com.example.application.views.requests.RequestsSuccessView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -52,9 +53,12 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
     public DebtorDetailView(DebtorService debtorService) {
         this.debtorService = debtorService;
 
-        // Создаем кнопку "Открыть заявки"
-        Button openRequestViewButton = createOpenRequestViewButton();
-        add(openRequestViewButton);
+        Button openSuccessRequestViewButton = acceptedCreditLimits();
+        Button openPendingRequestViewButton = pendingCreditLimits();
+
+        HorizontalLayout buttonLayoutForRequestButtons = new HorizontalLayout(openSuccessRequestViewButton,
+                openPendingRequestViewButton);
+        add(buttonLayoutForRequestButtons);
 
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
@@ -93,12 +97,26 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
         add(buttonLayout);
     }
 
-    private Button createOpenRequestViewButton() {
-        Button button = new Button("Открыть заявки", event -> {
+    private Button acceptedCreditLimits() {
+        Button button = new Button("Одобренные кредитные лимиты", event -> {
             if (debtor != null && debtor.getCompanyRegistrationCodes() != null) {
                 String registrationCode = debtor.getCompanyRegistrationCodes();
                 RouteParameters routeParameters = new RouteParameters("registrationCode", registrationCode);
                 UI.getCurrent().navigate(RequestsSuccessView.class, routeParameters);
+            } else {
+                Notification.show("Регистрационный код компании не найден");
+            }
+        });
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        return button;
+    }
+
+    private Button pendingCreditLimits() {
+        Button button = new Button("Просмотреть заявки", event -> {
+            if (debtor != null && debtor.getCompanyRegistrationCodes() != null) {
+                String registrationCode = debtor.getCompanyRegistrationCodes();
+                RouteParameters routeParameters = new RouteParameters("registrationCode", registrationCode);
+                UI.getCurrent().navigate(RequestsPendingView.class, routeParameters);
             } else {
                 Notification.show("Регистрационный код компании не найден");
             }

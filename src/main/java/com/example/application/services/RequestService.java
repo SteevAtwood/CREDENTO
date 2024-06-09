@@ -76,4 +76,8 @@ public class RequestService {
     public Page<Request> getAcceptedRequestsByRegistrationCode(String registrationCode, Pageable pageable) {
         return requestRepository.getAcceptedRequestsByRegistrationCode(registrationCode, pageable);
     }
+
+    public Page<Request> getPendingRequestsByRegistrationCode(String registrationCode, Pageable pageable) {
+        return requestRepository.getPendingRequestsByRegistrationCode(registrationCode, pageable);
+    }
 }
