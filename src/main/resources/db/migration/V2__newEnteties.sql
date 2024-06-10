@@ -59,6 +59,12 @@ CREATE TABLE `debtors_contract` (
   CONSTRAINT FK_contract_id FOREIGN KEY (`contract_id`) REFERENCES `contract`(`id`)
 );
 
+CREATE TABLE `country` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` TEXT NOT NULL,
+    `code` CHAR(3) NOT NULL
+);
+
 -- CREATE TABLE `sample_person` (
 --     `id` INT NOT NULL AUTO_INCREMENT,
 --     `first_name` VARCHAR(255) DEFAULT NULL,

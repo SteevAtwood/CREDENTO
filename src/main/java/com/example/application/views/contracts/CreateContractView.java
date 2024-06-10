@@ -1,11 +1,15 @@
 package com.example.application.views.contracts;
 
 import com.example.application.services.ContractService;
+import com.example.application.services.CountryService;
 import com.example.application.services.UserService;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.example.application.data.Country;
 import com.example.application.data.DateConversionUtil;
 import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
@@ -15,6 +19,7 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.dependency.Uses;
@@ -46,16 +51,18 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
     private final ContractService contractService;
     private final UserService userService;
+    private final CountryService countryService;
 
-    public CreateContractView(ContractService contractService, UserService userService) {
+    public CreateContractView(ContractService contractService, UserService userService, CountryService countryService) {
         this.contractService = contractService;
         this.userService = userService;
+        this.countryService = countryService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout2Col = new FormLayout();
         TextField insuranceContractNumber = new TextField();
-        TextField insurer = new TextField();
+        ComboBox<String> insurer = new ComboBox<>();
         DatePicker startDateOfInsuranceCoverage = new DatePicker();
         DatePicker endDateOfInsuranceCoverage = new DatePicker();
         ComboBox<StatusEnum> status = new ComboBox<>();
@@ -63,7 +70,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         ComboBox<User> supervisingUnderwriter = new ComboBox<>();
         ComboBox<User> supervisingUOPBEmployee = new ComboBox<>();
         TextField policyholder = new TextField();
-        ComboBox<String> coveredCountries = new ComboBox<>();
+        MultiSelectComboBox<Country> coveredCountries = new MultiSelectComboBox<>("Страны покрытия");
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
         IntegerField insuredSharePolitical = new IntegerField();
         TextField waitingPeriodPolitical = new TextField();
@@ -88,6 +95,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
         formLayout2Col.setWidth("100%");
         insuranceContractNumber.setLabel("Страховой номер");
         insurer.setLabel("Страховщик");
+        insurer.setItems("ООО «Кредендо – Ингосстрах Кредитное Страхование»");
+        insurer.setValue("ООО «Кредендо – Ингосстрах Кредитное Страхование»");
         status.setItems(StatusEnum.values());
         status.setItemLabelGenerator(StatusEnum::getDisplayName);
         status.setLabel("Статус");
@@ -105,9 +114,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         policyholder.setLabel("Страхователь");
         coveredCountries.setLabel("Страны покрытия");
-        coveredCountries.setItems("Россия", "Украина", "Беларусь");
+        coveredCountries.setItems(countryService.getAllCounties());
+        coveredCountries.setItemLabelGenerator(Country::getName);
 
-        coveredRisks.setLabel("Покрытые риски");
+        coveredRisks.setLabel("Риски покрытия");
         coveredRisks.setItems(CoveredRisksEnum.values());
         coveredRisks.setItemLabelGenerator(CoveredRisksEnum::getDisplayName);
 
@@ -217,6 +227,10 @@ public class CreateContractView extends Composite<VerticalLayout> {
             User selectedSupervisingUnderwriter = supervisingUnderwriter.getValue();
             User selectedSupervisingUOPBEmployee = supervisingUOPBEmployee.getValue();
 
+            Set<String> countryNames = coveredCountries.getValue().stream()
+                    .map(Country::getName)
+                    .collect(Collectors.toSet());
+
             contractService.createContract(
                     insuranceContractNumber.getValue(),
                     insurer.getValue(),
@@ -226,7 +240,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     selectedSupervisingUnderwriter,
                     selectedSupervisingUOPBEmployee,
                     policyholder.getValue(),
-                    coveredCountries.getValue(),
+                    countryNames,
                     coveredRisks.getValue(),
                     insuredSharePolitical.getValue().toString(),
                     Integer.valueOf(waitingPeriodPolitical.getValue()),

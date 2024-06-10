@@ -1,7 +1,7 @@
 package com.example.application.services;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class ContractService {
             User supervisingUnderwriter,
             User supervisingUOPBEmployee,
             String policyholder,
-            String coveredCountries,
+            Set<String> coveredCountries,
             CoveredRisksEnum coveredRisks,
             String insuredSharePolitical,
             Integer waitingPeriodPolitical,
@@ -52,7 +52,10 @@ public class ContractService {
         contract.setSupervisingUnderwriter(supervisingUnderwriter);
         contract.setSupervising_UOPB_employee(supervisingUOPBEmployee);
         contract.setPolicyholder(policyholder);
-        contract.setCoveredCountries(coveredCountries);
+
+        String countries = String.join(",", coveredCountries);
+        contract.setCoveredCountries(countries);
+
         contract.setCoveredRisks(coveredRisks);
         contract.setInsuredSharePolitical(insuredSharePolitical);
         contract.setWaitingPeriodPolitical(waitingPeriodPolitical);

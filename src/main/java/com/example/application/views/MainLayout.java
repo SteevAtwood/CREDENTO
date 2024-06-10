@@ -8,7 +8,6 @@ import com.example.application.views.contracts.CreateContractView;
 import com.example.application.views.debitors.DebitorsView;
 import com.example.application.views.debtors.CreateDebtorView;
 import com.example.application.views.debtors.DebtorsView;
-import com.example.application.views.newApplication.NewApplicationView;
 import com.example.application.views.requests.CreateRequestView;
 import com.example.application.views.requests.RequestsView;
 import com.vaadin.flow.component.applayout.AppLayout;

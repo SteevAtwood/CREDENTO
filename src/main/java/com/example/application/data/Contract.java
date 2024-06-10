@@ -48,7 +48,8 @@ public class Contract {
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
             LocalDate endDateOfInsuranceCoverage, User supervisingUnderwriter, User supervising_UOPB_employee,
-            String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks, String insuredSharePolitical,
+            String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks,
+            String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
         this.insuranceContractNumber = insuranceContractNumber;
