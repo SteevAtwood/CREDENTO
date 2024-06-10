@@ -1,7 +1,6 @@
 package com.example.application.views.requests;
 
 import com.example.application.data.Debtors;
-import com.example.application.data.User;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;

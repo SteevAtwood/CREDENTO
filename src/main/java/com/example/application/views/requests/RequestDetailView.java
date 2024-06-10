@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.Request;
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
@@ -41,7 +42,7 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
     private final ComboBox<String> clCurrency = new ComboBox<>("Валюта CL");
     private final TextField clTermsAndConditions = new TextField("Условия CL");
     private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
-
+    private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Стehfwbhjdbrfhjvbdhjbатус");
     private final Button cancel = new Button("Отмена");
     private final Button save = new Button("Сохранить");
     private final Button delete = new Button("Удалить");
@@ -53,13 +54,15 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
         formLayout.add(insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
-                clTermsAndConditions, adjustmentPossibility);
+                clTermsAndConditions, adjustmentPossibility, status);
 
         add(formLayout);
         setWidth("100%");
 
         binder = new BeanValidationBinder<>(Request.class);
         binder.bindInstanceFields(this);
+
+        clCurrency.setItems("RUB", "USD", "EUR");
 
         cancel.addClickListener(e -> clearForm());
         save.addClickListener(e -> {
@@ -106,7 +109,9 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
 
     private void populateForm(Request request) {
         this.request = request;
-        clCurrency.setItems("RUB", "USD", "EUR");
+
+        status.setItems(RequestStatusEnum.values());
+        status.setItemLabelGenerator(RequestStatusEnum::getDisplayName);
         binder.readBean(this.request);
     }
 
@@ -122,5 +127,4 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
             UI.getCurrent().navigate(RequestsView.class);
         }
     }
-
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.Debtors;
+import com.example.application.data.Request;
 import com.example.application.repository.DebtorRepository;
+import com.example.application.repository.RequestRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,8 @@ public class DebtorService {
 
     @Autowired
     DebtorRepository debtorRepository;
+    @Autowired
+    RequestRepository requestRepository;
 
     @Transactional
     public Debtors createDebtor(String companyName, String address, String informationProviderCode,
@@ -69,5 +73,9 @@ public class DebtorService {
 
     public List<Debtors> getDebtors() {
         return debtorRepository.findAll();
+    }
+
+    public Page<Request> getAcceptedRequestsByDebtorRegistrationCode(String registrationCode, Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByRegistrationCode(registrationCode, pageable);
     }
 }

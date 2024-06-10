@@ -2,7 +2,6 @@ package com.example.application.data;
 
 public class requestStatusEnum {
     public enum RequestStatusEnum {
-
         pending("В рассмотрении"),
         accepted("Одобрено"),
         declined("Отклонено");

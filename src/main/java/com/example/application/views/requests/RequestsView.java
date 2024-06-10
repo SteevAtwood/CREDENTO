@@ -1,6 +1,7 @@
 package com.example.application.views.requests;
 
 import com.example.application.data.Request;
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -82,6 +83,7 @@ public class RequestsView extends Div {
     public static class Filters extends Div implements Specification<Request> {
 
         private final TextField insuranceContractNumber = new TextField("Страховой номер");
+        private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
         private final TextField clAmount = new TextField("Сумма CL");
@@ -95,21 +97,26 @@ public class RequestsView extends Div {
 
             clCurrency.setItems("RUB", "USD", "EUR");
 
+            status.setItems(RequestStatusEnum.values());
+            System.out.println("STATUS");
+
             HorizontalLayout filterLayout = new HorizontalLayout();
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency);
+            filterLayout.add(insuranceContractNumber, status, debitorsCountry, registrationCode, clAmount);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
                 insuranceContractNumber.clear();
+                status.clear();
                 debitorsCountry.clear();
                 registrationCode.clear();
                 clAmount.clear();
                 clCurrency.clear();
                 onSearch.run();
+
             });
 
             Button searchBtn = new Button("Найти");
@@ -136,6 +143,9 @@ public class RequestsView extends Div {
                         lowerCaseFilter + "%");
                 predicates.add(insuranceContractNumberMatch);
             }
+            if (status.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status.getValue()));
+            }
             if (!debitorsCountry.isEmpty()) {
                 String lowerCaseFilter = debitorsCountry.getValue().toLowerCase();
                 Predicate debitorsCountryMatch = criteriaBuilder.like(
@@ -156,7 +166,8 @@ public class RequestsView extends Div {
                 predicates.add(clAmountMatch);
             }
             if (clCurrency.getValue() != null) {
-                Predicate clCurrencyMatch = criteriaBuilder.equal(root.get("clCurrency"), clCurrency.getValue());
+                Predicate clCurrencyMatch = criteriaBuilder.equal(root.get("clCurrency"),
+                        clCurrency.getValue());
                 predicates.add(clCurrencyMatch);
             }
 
@@ -167,6 +178,7 @@ public class RequestsView extends Div {
     private Component createGrid() {
         grid = new Grid<>(Request.class, false);
         grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
+        grid.addColumn("statusA").setAutoWidth(true).setHeader("Статус");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма CL");

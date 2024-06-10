@@ -92,10 +92,12 @@ public class Contract {
     }
 
     public StatusEnum getStatus() {
+        System.out.println("CHECK GET CONTRACT STATUS");
         return status;
     }
 
     public void setStatus(StatusEnum status) {
+        System.out.println("CHECK SET CONTRACT STATUS");
         this.status = status;
     }
 

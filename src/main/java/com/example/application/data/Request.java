@@ -24,14 +24,15 @@ public class Request {
     private Integer debtor;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatusEnum status;
+    @Column(name = "status")
+    private RequestStatusEnum statusA;
 
     public Request() {
 
     }
 
     public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
-            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
+            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum statusA,
             Integer debtor) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.debitorsCountry = debitorsCountry;
@@ -40,7 +41,7 @@ public class Request {
         this.clCurrency = clCurrency;
         this.clTermsAndConditions = clTermsAndConditions;
         this.adjustmentPossibility = adjustmentPossibility;
-        this.status = status;
+        this.statusA = statusA;
         this.debtor = debtor;
     }
 
@@ -105,11 +106,13 @@ public class Request {
     }
 
     public RequestStatusEnum getRequestStatus() {
-        return status;
+        System.out.println("CHECK GET REQUEST STATUS");
+        return RequestStatusEnum.accepted;
     }
 
-    public void setRequestStatus(RequestStatusEnum status) {
-        this.status = status;
+    public void setRequestStatus(RequestStatusEnum statusA) {
+        System.out.println("CHECK SET REQUEST STATUS");
+        this.statusA = statusA;
     }
 
     public Integer getDebtor() {

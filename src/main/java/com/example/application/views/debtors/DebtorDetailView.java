@@ -43,7 +43,8 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
     private final TextField informationProviderCode = new TextField("Код информационного провайдера");
     private final TextField companyRegistrationCodes = new TextField("Регистрационные коды компании");
     private final TextField okvedCode = new TextField("Код ОКВЭД");
-    private final ComboBox<StatusEnum> status = new ComboBox<>("Статус компании");
+    // private final ComboBox<StatusEnum> status = new ComboBox<>("Статус
+    // компании");
 
     private final Button cancel = new Button("Отмена");
     private final Button save = new Button("Сохранить");
@@ -62,7 +63,7 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
 
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
-        formLayout.add(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode, status);
+        formLayout.add(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode);
 
         add(formLayout);
         setWidth("100%");
@@ -145,8 +146,8 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
     private void populateForm(Debtors debtor) {
         this.debtor = debtor;
 
-        status.setItems(StatusEnum.values());
-        status.setItemLabelGenerator(StatusEnum::getDisplayName);
+        // status.setItems(StatusEnum.values());
+        // status.setItemLabelGenerator(StatusEnum::getDisplayName);
         binder.readBean(this.debtor);
     }
 

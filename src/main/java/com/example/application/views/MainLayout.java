@@ -70,6 +70,7 @@ public class MainLayout extends AppLayout {
         Scroller scroller = new Scroller(createNavigation());
 
         addToDrawer(header, scroller, createFooter());
+        getStyle().set("font-size", "smaller");
     }
 
     private SideNav createNavigation() {
@@ -95,12 +96,13 @@ public class MainLayout extends AppLayout {
                             LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
         }
         if (accessChecker.hasAccess(CreateRequestView.class)) {
-            nav.addItem(new SideNavItem("Создать запрос", CreateRequestView.class, LineAwesomeIcon.USER.create()));
+            nav.addItem(
+                    new SideNavItem("Создать кредитный лимит", CreateRequestView.class, LineAwesomeIcon.USER.create()));
 
         }
         if (accessChecker.hasAccess(RequestsView.class)) {
             nav.addItem(
-                    new SideNavItem("Список запросов", RequestsView.class,
+                    new SideNavItem("Список кредитных лимитов", RequestsView.class,
                             LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
         }
 
