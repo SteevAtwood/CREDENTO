@@ -172,10 +172,12 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
         grid.addColumn("clTermsAndConditions").setAutoWidth(true).setHeader("Условия CL");
         grid.addColumn("adjustmentPossibility").setAutoWidth(true).setHeader("Возможность корректировки");
 
-        grid.setItems(query -> requestService.getPendingRequestsByRegistrationCode(insuranceContractNumber,
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        // grid.setItems(query ->
+        // requestService.getPendingRequestsByRegistrationCode(insuranceContractNumber,
+        // PageRequest.of(query.getPage(), query.getPageSize(),
+        // VaadinSpringDataHelpers.toSpringDataSort(query)))
+        // .stream());
+        // grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
         grid.addItemClickListener(event -> {

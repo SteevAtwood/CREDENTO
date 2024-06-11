@@ -75,7 +75,7 @@ public class DebtorService {
         return debtorRepository.findAll();
     }
 
-    public Page<Request> getAcceptedRequestsByDebtorRegistrationCode(String registrationCode, Pageable pageable) {
-        return requestRepository.getAcceptedRequestsByRegistrationCode(registrationCode, pageable);
+    public Page<Request> getSuccesRequestsByDebtorId(Integer debtorId, Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByDebtorId(debtorId, pageable);
     }
 }

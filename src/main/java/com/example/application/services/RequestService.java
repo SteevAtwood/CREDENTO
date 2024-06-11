@@ -75,11 +75,13 @@ public class RequestService {
         requestRepository.deleteById(id);
     }
 
-    public Page<Request> getAcceptedRequestsByRegistrationCode(String registrationCode, Pageable pageable) {
-        return requestRepository.getAcceptedRequestsByRegistrationCode(registrationCode, pageable);
+    public Page<Request> getAcceptedRequestsByDebtorId(Integer debtorId, Pageable pageable) {
+        System.out.println("WHERE IS MY ID ACCEPTED" + debtorId);
+        return requestRepository.getAcceptedRequestsByDebtorId(debtorId, pageable);
     }
 
-    public Page<Request> getPendingRequestsByRegistrationCode(String registrationCode, Pageable pageable) {
-        return requestRepository.getPendingRequestsByRegistrationCode(registrationCode, pageable);
+    public Page<Request> getPendingRequestsByDebtorId(Integer debtorId, Pageable pageable) {
+        System.out.println("WHERE IS MY ID" + debtorId);
+        return requestRepository.getPendingRequestsByDebtorId(debtorId, pageable);
     }
 }

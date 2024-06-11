@@ -98,12 +98,12 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
 
     private Button acceptedCreditLimits() {
         Button button = new Button("Одобренные кредитные лимиты", event -> {
-            if (debtor != null && debtor.getCompanyRegistrationCodes() != null) {
-                String registrationCode = debtor.getCompanyRegistrationCodes();
-                RouteParameters routeParameters = new RouteParameters("registrationCode", registrationCode);
+            if (debtor != null && debtor.getId() != null) {
+                String debtorId = String.valueOf(debtor.getId());
+                RouteParameters routeParameters = new RouteParameters("debtorId", debtorId);
                 UI.getCurrent().navigate(RequestsSuccessView.class, routeParameters);
             } else {
-                Notification.show("Регистрационный код компании не найден");
+                Notification.show("Идентификатор дебитора не найден");
             }
         });
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -112,12 +112,12 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
 
     private Button pendingCreditLimits() {
         Button button = new Button("Просмотреть заявки", event -> {
-            if (debtor != null && debtor.getCompanyRegistrationCodes() != null) {
-                String registrationCode = debtor.getCompanyRegistrationCodes();
-                RouteParameters routeParameters = new RouteParameters("registrationCode", registrationCode);
+            if (debtor != null && debtor.getId() != null) {
+                String debtorId = String.valueOf(debtor.getId());
+                RouteParameters routeParameters = new RouteParameters("debtorId", debtorId);
                 UI.getCurrent().navigate(RequestsPendingView.class, routeParameters);
             } else {
-                Notification.show("Регистрационный код компании не найден");
+                Notification.show("Идентификатор дебитора не найден");
             }
         });
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
