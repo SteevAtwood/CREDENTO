@@ -35,7 +35,7 @@ public class RequestService {
         request.setClCurrency(clCurrency);
         request.setClTermsAndConditions(clTermsAndConditions);
         request.setAdjustmentPossibility(adjustmentPossibility);
-        request.setRequestStatus(status);
+        request.setStatus(status);
         request.setDebtor(debtor);
         return requestRepository.save(request);
     }

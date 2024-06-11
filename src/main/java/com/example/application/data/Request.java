@@ -28,7 +28,6 @@ public class Request {
     private RequestStatusEnum status;
 
     public Request() {
-
     }
 
     public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
@@ -106,12 +105,10 @@ public class Request {
     }
 
     public RequestStatusEnum getStatus() {
-        System.out.println("CHECK GET REQUEST STATUS");
-        return RequestStatusEnum.accepted;
+        return status;
     }
 
     public void setStatus(RequestStatusEnum status) {
-        System.out.println("CHECK SET REQUEST STATUS");
         this.status = status;
     }
 
@@ -122,5 +119,4 @@ public class Request {
     public void setDebtor(Integer debtor) {
         this.debtor = debtor;
     }
-
 }
