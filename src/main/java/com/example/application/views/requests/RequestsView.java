@@ -1,7 +1,9 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -40,13 +42,16 @@ public class RequestsView extends Div {
     private Filters filters;
 
     private final RequestService requestService;
+    private final DebtorService debtorService;
 
-    public RequestsView(RequestService requestService) {
+    public RequestsView(RequestService requestService, DebtorService debtorService) {
         this.requestService = requestService;
+        this.debtorService = debtorService;
+
         setSizeFull();
         addClassNames("request-view");
 
-        filters = new Filters(() -> refreshGrid());
+        filters = new Filters(() -> refreshGrid(), debtorService);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
@@ -80,6 +85,9 @@ public class RequestsView extends Div {
 
     public static class Filters extends Div implements Specification<Request> {
 
+        private final DebtorService debtorService;
+
+        private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
         private final TextField contractNumber = new TextField("Страховой номер");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
@@ -89,11 +97,16 @@ public class RequestsView extends Div {
         private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
         private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, DebtorService debtorService) {
+            this.debtorService = debtorService;
+
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+
+            debtor.setItems(debtorService.getDebtors());
+            debtor.setItemLabelGenerator(Debtors::getCompanyName);
 
             status.setItems(RequestStatusEnum.values());
 
@@ -101,12 +114,13 @@ public class RequestsView extends Div {
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(contractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
+            filterLayout.add(debtor, contractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
                     clTermsAndConditions, status, adjustmentPossibility);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
+                debtor.clear();
                 contractNumber.clear();
                 debitorsCountry.clear();
                 registrationCode.clear();
@@ -135,6 +149,9 @@ public class RequestsView extends Div {
         public Predicate toPredicate(Root<Request> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (debtor.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("debtor"), debtor.getValue()));
+            }
             if (!contractNumber.isEmpty()) {
                 String lowerCaseFilter = contractNumber.getValue().toLowerCase();
                 Predicate contractNumberMatch = criteriaBuilder.like(
@@ -158,7 +175,6 @@ public class RequestsView extends Div {
             }
             if (!clAmount.isEmpty()) {
                 String lowerCaseFilter = clAmount.getValue().toLowerCase();
-
                 Predicate clAmountMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("clAmount")),
                         lowerCaseFilter + "%");
                 predicates.add(clAmountMatch);
@@ -193,6 +209,9 @@ public class RequestsView extends Div {
 
     private Component createGrid() {
         grid = new Grid<>(Request.class, false);
+        grid.addColumn(request -> request.getDebtor().getCompanyName())
+                .setAutoWidth(true)
+                .setHeader("Дебитор");
         grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
@@ -212,7 +231,6 @@ public class RequestsView extends Div {
             Request selectedRequest = event.getItem();
             String requestId = String.valueOf(selectedRequest.getId());
             getUI().ifPresent(ui -> ui.navigate("requests/" + requestId));
-            System.out.println("requests ВЫВОД ЧТОБЫ ВИДНО ЧТО НЕ NULL " + requestId);
         });
 
         return grid;

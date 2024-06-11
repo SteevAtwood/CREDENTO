@@ -1,5 +1,6 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
@@ -84,6 +85,7 @@ public class RequestsPendingView extends Div implements BeforeEnterObserver {
         private final TextField registrationCode = new TextField("Регистрационный код");
         private final TextField clAmount = new TextField("Сумма CL");
         private final ComboBox<String> clCurrency = new ComboBox<>("Валюта CL");
+        private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
 
         public Filters(Runnable onSearch) {
             setWidthFull();

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 public interface RequestRepository extends JpaRepository<Request, Integer>, JpaSpecificationExecutor<Request> {
 
   @Query(nativeQuery = true, value = """
-          select * from request where status = 'accepted' and status = 'declined' and registration_code = :registrationCode
+          select * from request where status = 'accepted' and registration_code = :registrationCode
       """)
   Page<Request> getAcceptedRequestsByRegistrationCode(String registrationCode, Pageable pageable);
 
