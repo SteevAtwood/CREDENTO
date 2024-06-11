@@ -42,7 +42,7 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
     private final ComboBox<String> clCurrency = new ComboBox<>("Валюта CL");
     private final TextField clTermsAndConditions = new TextField("Условия CL");
     private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
-    private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Стehfwbhjdbrfhjvbdhjbатус");
+    private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
     private final Button cancel = new Button("Отмена");
     private final Button save = new Button("Сохранить");
     private final Button delete = new Button("Удалить");

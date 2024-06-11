@@ -24,7 +24,8 @@ public class RequestService {
     @Transactional
     public Request createRequest(String insuranceContractNumber, String debitorsCountry, String registrationCode,
             BigDecimal clAmount,
-            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status) {
+            String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
+            Integer debtor) {
 
         Request request = new Request();
         request.setInsuranceContractNumber(insuranceContractNumber);
@@ -35,7 +36,7 @@ public class RequestService {
         request.setClTermsAndConditions(clTermsAndConditions);
         request.setAdjustmentPossibility(adjustmentPossibility);
         request.setRequestStatus(status);
-        // request.setDebtor(debtor);
+        request.setDebtor(debtor);
         return requestRepository.save(request);
     }
 
