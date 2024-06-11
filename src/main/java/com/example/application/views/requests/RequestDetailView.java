@@ -1,12 +1,14 @@
 package com.example.application.views.requests;
 
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.services.ConfirmationDialog;
+import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -32,9 +34,11 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
 
     @Autowired
     private final RequestService requestService;
+    private final DebtorService debtorService;
     private Request request;
     private Dialog confirmDialog;
 
+    private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
     private final TextField insuranceContractNumber = new TextField("Страховой номер");
     private final TextField debitorsCountry = new TextField("Страна дебитора");
     private final TextField registrationCode = new TextField("Регистрационный код");
@@ -48,12 +52,13 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
     private final Button delete = new Button("Удалить");
     private final BeanValidationBinder<Request> binder;
 
-    public RequestDetailView(RequestService requestService) {
+    public RequestDetailView(RequestService requestService, DebtorService debtorService) {
         this.requestService = requestService;
+        this.debtorService = debtorService;
 
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
-        formLayout.add(insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
+        formLayout.add(debtor, insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
                 clTermsAndConditions, adjustmentPossibility, status);
 
         add(formLayout);
@@ -109,6 +114,11 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
 
     private void populateForm(Request request) {
         this.request = request;
+
+        List<Debtors> debtors = debtorService.getDebtors();
+        debtor.setItems(debtors);
+        debtor.setItemLabelGenerator(Debtors::getCompanyName);
+        debtor.setValue(request.getDebtor());
 
         status.setItems(RequestStatusEnum.values());
         status.setItemLabelGenerator(RequestStatusEnum::getDisplayName);

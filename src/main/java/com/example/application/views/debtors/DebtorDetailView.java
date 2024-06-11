@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.Debtors;
-import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.DebtorService;
 import com.example.application.views.MainLayout;
@@ -14,7 +13,6 @@ import com.example.application.views.requests.RequestsSuccessView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.Icon;

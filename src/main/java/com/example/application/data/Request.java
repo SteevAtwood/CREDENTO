@@ -21,7 +21,9 @@ public class Request {
     @Column(name = "cl_terms_conditions")
     private String clTermsAndConditions;
     private String adjustmentPossibility;
-    private Integer debtor;
+    @ManyToOne
+    @JoinColumn(name = "debtor", referencedColumnName = "id")
+    private Debtors debtor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -32,7 +34,7 @@ public class Request {
 
     public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
             String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
-            Integer debtor) {
+            Debtors debtor) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.debitorsCountry = debitorsCountry;
         this.registrationCode = registrationCode;
@@ -112,11 +114,11 @@ public class Request {
         this.status = status;
     }
 
-    public Integer getDebtor() {
+    public Debtors getDebtor() {
         return debtor;
     }
 
-    public void setDebtor(Integer debtor) {
+    public void setDebtor(Debtors debtor) {
         this.debtor = debtor;
     }
 }

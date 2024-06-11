@@ -12,8 +12,11 @@ import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.ContractService;
 import com.example.application.services.UserService;
 import com.example.application.views.MainLayout;
+import com.example.application.views.requests.RequestsPendingContractView;
+import com.example.application.views.requests.RequestsSuccessContractView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
@@ -68,6 +71,13 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
         this.contractService = contractService;
         this.userService = userService;
 
+        Button openSuccessRequestViewButton = acceptedCreditLimits();
+        Button openPendingRequestViewButton = pendingCreditLimits();
+
+        HorizontalLayout buttonLayoutForRequestButtons = new HorizontalLayout(openSuccessRequestViewButton,
+                openPendingRequestViewButton);
+        add(buttonLayoutForRequestButtons);
+
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
         formLayout.add(insuranceContractNumber, insurer, startDateOfInsuranceCoverage,
@@ -107,6 +117,36 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
         HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel, delete);
         add(buttonLayout);
+    }
+
+    private Button acceptedCreditLimits() {
+        Button button = new Button("Одобренные кредитные лимиты", event -> {
+            if (contract != null && contract.getInsuranceContractNumber() != null) {
+                String insuranceContractNumber = contract.getInsuranceContractNumber();
+                RouteParameters routeParameters = new RouteParameters("insuranceContractNumber",
+                        insuranceContractNumber);
+                UI.getCurrent().navigate(RequestsSuccessContractView.class, routeParameters);
+            } else {
+                Notification.show("Регистрационный код компании не найден");
+            }
+        });
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        return button;
+    }
+
+    private Button pendingCreditLimits() {
+        Button button = new Button("Просмотреть заявки", event -> {
+            if (contract != null && contract.getInsuranceContractNumber() != null) {
+                String insuranceContractNumber = contract.getInsuranceContractNumber();
+                RouteParameters routeParameters = new RouteParameters("insuranceContractNumber",
+                        insuranceContractNumber);
+                UI.getCurrent().navigate(RequestsPendingContractView.class, routeParameters);
+            } else {
+                Notification.show("Регистрационный код компании не найден");
+            }
+        });
+        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        return button;
     }
 
     @Override

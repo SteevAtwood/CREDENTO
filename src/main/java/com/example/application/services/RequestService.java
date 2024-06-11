@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
 import com.example.application.repository.RequestRepository;
@@ -25,7 +26,7 @@ public class RequestService {
     public Request createRequest(String insuranceContractNumber, String debitorsCountry, String registrationCode,
             BigDecimal clAmount,
             String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
-            Integer debtor) {
+            Debtors debtor) {
 
         Request request = new Request();
         request.setInsuranceContractNumber(insuranceContractNumber);
