@@ -1,8 +1,10 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+import com.example.application.services.ContractService;
 import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
@@ -29,6 +31,7 @@ import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -41,17 +44,22 @@ public class RequestsView extends Div {
     private Grid<Request> grid;
     private Filters filters;
 
-    private final RequestService requestService;
-    private final DebtorService debtorService;
+    @Autowired
+    RequestService requestService;
+    @Autowired
+    DebtorService debtorService;
+    @Autowired
+    ContractService contractService;
 
-    public RequestsView(RequestService requestService, DebtorService debtorService) {
+    public RequestsView(RequestService requestService, DebtorService debtorService, ContractService contractService) {
         this.requestService = requestService;
         this.debtorService = debtorService;
+        this.contractService = contractService;
 
         setSizeFull();
         addClassNames("request-view");
 
-        filters = new Filters(() -> refreshGrid(), debtorService);
+        filters = new Filters(() -> refreshGrid(), debtorService, contractService);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
@@ -85,10 +93,13 @@ public class RequestsView extends Div {
 
     public static class Filters extends Div implements Specification<Request> {
 
-        private final DebtorService debtorService;
+        @Autowired
+        DebtorService debtorService;
+        @Autowired
+        ContractService contractService;
 
         private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
-        private final TextField contractNumber = new TextField("Номер договора");
+        private final ComboBox<Contract> contractNumber = new ComboBox<>("Номер договора");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
         private final TextField clAmount = new TextField("Сумма");
@@ -97,13 +108,17 @@ public class RequestsView extends Div {
         private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
         private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
 
-        public Filters(Runnable onSearch, DebtorService debtorService) {
+        public Filters(Runnable onSearch, DebtorService debtorService, ContractService contractService) {
             this.debtorService = debtorService;
+            this.contractService = contractService;
 
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+
+            contractNumber.setItems(contractService.getAllContracts());
+            contractNumber.setItemLabelGenerator(Contract::getInsuranceContractNumber);
 
             debtor.setItems(debtorService.getDebtors());
             debtor.setItemLabelGenerator(Debtors::getCompanyName);
@@ -152,12 +167,8 @@ public class RequestsView extends Div {
             if (debtor.getValue() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("debtor"), debtor.getValue()));
             }
-            if (!contractNumber.isEmpty()) {
-                String lowerCaseFilter = contractNumber.getValue().toLowerCase();
-                Predicate contractNumberMatch = criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("insuranceContractNumber")),
-                        lowerCaseFilter + "%");
-                predicates.add(contractNumberMatch);
+            if (contractNumber.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("policyholder"), contractNumber.getValue()));
             }
             if (!debitorsCountry.isEmpty()) {
                 String lowerCaseFilter = debitorsCountry.getValue().toLowerCase();
@@ -212,7 +223,10 @@ public class RequestsView extends Div {
         grid.addColumn(request -> request.getDebtor().getCompanyName())
                 .setAutoWidth(true)
                 .setHeader("Дебитор");
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
+        grid.addColumn(request -> request.getInsuranceContractNumber().getInsuranceContractNumber())
+                .setAutoWidth(true)
+                .setHeader("Номер договора");
+
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма");
