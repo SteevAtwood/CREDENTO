@@ -1,9 +1,11 @@
 package com.example.application.views.contracts;
 
 import com.example.application.data.Contract;
+import com.example.application.data.Policyholder;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ContractService;
+import com.example.application.services.PolicyholderService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -31,6 +33,7 @@ import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -43,14 +46,19 @@ public class ContractsView extends Div {
     private Grid<Contract> grid;
     private Filters filters;
 
-    private final ContractService contractService;
+    @Autowired
+    ContractService contractService;
+    @Autowired
+    PolicyholderService policyholderService;
 
-    public ContractsView(ContractService contractService) {
+    public ContractsView(ContractService contractService, PolicyholderService policyholderService) {
         this.contractService = contractService;
+        this.policyholderService = policyholderService;
+
         setSizeFull();
         addClassNames("contract-view");
 
-        filters = new Filters(() -> refreshGrid());
+        filters = new Filters(() -> refreshGrid(), policyholderService);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
@@ -84,19 +92,27 @@ public class ContractsView extends Div {
 
     public static class Filters extends Div implements Specification<Contract> {
 
+        @Autowired
+        PolicyholderService policyholderService;
+
         private final TextField contractNumber = new TextField("Страховой номер");
-        private final TextField insurer = new TextField("Страховщик");
+        private final ComboBox<Policyholder> policyholder = new ComboBox<>("Страхователь");
         private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
         private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
         private final DatePicker endDateOfInsuranceCoverage = new DatePicker("Дата окончания страхования");
-        private final TextField policyholder = new TextField("Страхователь");
         private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Покрытые риски");
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, PolicyholderService policyholderService) {
+
+            this.policyholderService = policyholderService;
+
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+
+            policyholder.setItems(policyholderService.getAllPolicyholders());
+            policyholder.setItemLabelGenerator(Policyholder::getCompanyName);
 
             status.setItems(StatusEnum.values());
             coveredRisks.setItems(CoveredRisksEnum.values());
@@ -105,18 +121,17 @@ public class ContractsView extends Div {
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(contractNumber, insurer, status, createDateRangeFilter(), policyholder,
+            filterLayout.add(contractNumber, policyholder, status, createDateRangeFilter(),
                     coveredRisks);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
                 contractNumber.clear();
-                insurer.clear();
+                policyholder.clear();
                 status.clear();
                 startDateOfInsuranceCoverage.clear();
                 endDateOfInsuranceCoverage.clear();
-                policyholder.clear();
                 coveredRisks.clear();
                 onSearch.run();
             });
@@ -159,11 +174,8 @@ public class ContractsView extends Div {
                         lowerCaseFilter + "%");
                 predicates.add(contractNumberMatch);
             }
-            if (!insurer.isEmpty()) {
-                String lowerCaseFilter = insurer.getValue().toLowerCase();
-                Predicate insurerMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("insurer")),
-                        lowerCaseFilter + "%");
-                predicates.add(insurerMatch);
+            if (policyholder.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("policyholder"), policyholder.getValue()));
             }
             if (status.getValue() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("status"), status.getValue()));
@@ -178,12 +190,13 @@ public class ContractsView extends Div {
                         root.get("endDateOfInsuranceCoverage"),
                         java.sql.Date.valueOf(endDateOfInsuranceCoverage.getValue().plusDays(1))));
             }
-            if (!policyholder.isEmpty()) {
-                String lowerCaseFilter = policyholder.getValue().toLowerCase();
-                Predicate policyholderMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("policyholder")),
-                        lowerCaseFilter + "%");
-                predicates.add(policyholderMatch);
-            }
+            // if (!policyholder.isEmpty()) {
+            // String lowerCaseFilter = policyholder.getValue().toLowerCase();
+            // Predicate policyholderMatch =
+            // criteriaBuilder.like(criteriaBuilder.lower(root.get("policyholder")),
+            // lowerCaseFilter + "%");
+            // predicates.add(policyholderMatch);
+            // }
             if (coveredRisks.getValue() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("coveredRisks"), coveredRisks.getValue()));
             }
@@ -195,11 +208,12 @@ public class ContractsView extends Div {
     private Component createGrid() {
         grid = new Grid<>(Contract.class, false);
         grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
-        grid.addColumn("insurer").setAutoWidth(true).setHeader("Страховщик");
+        grid.addColumn(contract -> contract.getPolicyholder().getCompanyName())
+                .setAutoWidth(true)
+                .setHeader("Страхователь");
         grid.addColumn("status").setAutoWidth(true).setHeader("Статус");
         grid.addColumn("startDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Дата начала страхования");
         grid.addColumn("endDateOfInsuranceCoverage").setAutoWidth(true).setHeader("Дата окончания страхования");
-        grid.addColumn("policyholder").setAutoWidth(true).setHeader("Страхователь");
         grid.addColumn("coveredRisks").setAutoWidth(true).setHeader("Покрытые риски");
 
         grid.setItems(query -> contractService.list(
@@ -212,7 +226,6 @@ public class ContractsView extends Div {
             Contract selectedContract = event.getItem();
             String contractId = String.valueOf(selectedContract.getId());
             getUI().ifPresent(ui -> ui.navigate("contracts/" + contractId));
-            System.out.println("contracts  ВЫВОД ЧТОБЫ ВИДНО ЧТО НЕ NULL" + contractId);
         });
 
         return grid;
