@@ -95,7 +95,7 @@ public class ContractsView extends Div {
         @Autowired
         PolicyholderService policyholderService;
 
-        private final TextField contractNumber = new TextField("Страховой номер");
+        private final TextField contractNumber = new TextField("Номер договора");
         private final ComboBox<Policyholder> policyholder = new ComboBox<>("Страхователь");
         private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
         private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
@@ -207,7 +207,7 @@ public class ContractsView extends Div {
 
     private Component createGrid() {
         grid = new Grid<>(Contract.class, false);
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
+        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
         grid.addColumn(contract -> contract.getPolicyholder().getCompanyName())
                 .setAutoWidth(true)
                 .setHeader("Страхователь");

@@ -1,12 +1,16 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+import com.example.application.services.ContractService;
 import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
@@ -36,17 +40,23 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class CreateRequestView extends Composite<VerticalLayout> {
 
-    private final RequestService requestService;
-    private final DebtorService debtorService;
+    @Autowired
+    RequestService requestService;
+    @Autowired
+    DebtorService debtorService;
+    @Autowired
+    ContractService contractService;
 
-    public CreateRequestView(RequestService requestService, DebtorService debtorService) {
+    public CreateRequestView(RequestService requestService, DebtorService debtorService,
+            ContractService contractService) {
         this.requestService = requestService;
         this.debtorService = debtorService;
+        this.contractService = contractService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout2Col = new FormLayout();
-        TextField insuranceContractNumber = new TextField();
+        ComboBox<Contract> insuranceContractNumber = new ComboBox<>();
         ComboBox<Debtors> debtor = new ComboBox<>();
         TextField debitorsCountry = new TextField();
         TextField registrationCode = new TextField();
@@ -69,7 +79,11 @@ public class CreateRequestView extends Composite<VerticalLayout> {
         h3.setText("Создание новой заявки");
         h3.setWidth("100%");
         formLayout2Col.setWidth("100%");
-        insuranceContractNumber.setLabel("Страховой номер");
+
+        insuranceContractNumber.setLabel("Номер договора");
+        List<Contract> contracts = contractService.getAllContracts();
+        insuranceContractNumber.setItems(contracts);
+        insuranceContractNumber.setItemLabelGenerator(Contract::getInsuranceContractNumber);
 
         // debtor.setLabel("Дебитор");
         // List<Debtors> debtors = debtorService.getDebtors();
@@ -125,8 +139,10 @@ public class CreateRequestView extends Composite<VerticalLayout> {
             BigDecimal amount = new BigDecimal(clAmount.getValue());
             Debtors selectedDebtor = debtor.getValue();
 
+            Contract selectedInsuranceContractNumber = insuranceContractNumber.getValue();
+
             requestService.createRequest(
-                    insuranceContractNumber.getValue(),
+                    selectedInsuranceContractNumber,
                     debitorsCountry.getValue(),
                     registrationCode.getValue(),
                     amount,

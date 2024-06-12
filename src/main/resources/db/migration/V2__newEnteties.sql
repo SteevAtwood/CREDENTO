@@ -53,7 +53,7 @@ CREATE TABLE `contract` (
 
 CREATE TABLE `request` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `contract_id` INT DEFAULT NULL,
+    `insurance_contract_number` INT DEFAULT NULL,
     `debitors_country` varchar(255) DEFAULT NULL,
     `registration_code` varchar(255) DEFAULT NULL,
     `cl_amount` DECIMAL(10,2) DEFAULT 0.00,
@@ -64,8 +64,9 @@ CREATE TABLE `request` (
     `debtor` INT DEFAULT NULL, 
     PRIMARY KEY (`id`),
     CONSTRAINT FK_debtor_request FOREIGN KEY (`debtor`) REFERENCES `debtors`(`id`),
-    CONSTRAINT FK_request_contract_id FOREIGN KEY (`contract_id`) REFERENCES `contract`(`id`)
+    CONSTRAINT FK_request_insurance_contract_number FOREIGN KEY (`insurance_contract_number`) REFERENCES `contract`(`id`)
 );
+
 
 CREATE TABLE `debtors_contract` (
   `debtor_id` int DEFAULT NULL,

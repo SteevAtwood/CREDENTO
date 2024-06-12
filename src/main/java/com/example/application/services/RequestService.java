@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.data.requestStatusEnum.RequestStatusEnum;
@@ -23,7 +24,7 @@ public class RequestService {
     RequestRepository requestRepository;
 
     @Transactional
-    public Request createRequest(String insuranceContractNumber, String debitorsCountry, String registrationCode,
+    public Request createRequest(Contract insuranceContractNumber, String debitorsCountry, String registrationCode,
             BigDecimal clAmount,
             String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
             Debtors debtor) {

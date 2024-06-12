@@ -79,7 +79,7 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
 
     public static class Filters extends Div implements Specification<Request> {
 
-        private final TextField insuranceContractNumber = new TextField("Страховой номер");
+        private final TextField insuranceContractNumber = new TextField("Номер договора");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
         private final TextField clAmount = new TextField("Сумма CL");
@@ -164,7 +164,7 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
 
     private Component createGrid() {
         grid = new Grid<>(Request.class, false);
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
+        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма CL");

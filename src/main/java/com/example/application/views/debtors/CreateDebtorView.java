@@ -57,7 +57,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         layoutColumn2.setWidth("100%");
         layoutColumn2.setMaxWidth("800px");
         layoutColumn2.setHeight("min-content");
-        h3.setText("Создание нового страхователя");
+        h3.setText("Создание нового дебитора");
         h3.setWidth("100%");
         formLayout.setWidth("100%");
 

@@ -88,7 +88,7 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
         private final DebtorService debtorService;
 
         private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
-        private final TextField contractNumber = new TextField("Страховой номер");
+        private final TextField contractNumber = new TextField("Номер договора");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
         private final TextField clAmount = new TextField("Сумма");
@@ -214,7 +214,7 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
         grid.addColumn(request -> request.getDebtor().getCompanyName())
                 .setAutoWidth(true)
                 .setHeader("Дебитор");
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Страховой номер");
+        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма");

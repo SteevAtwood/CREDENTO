@@ -5,11 +5,13 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.application.data.Contract;
+import com.example.application.data.Policyholder;
 import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ConfirmationDialog;
 import com.example.application.services.ContractService;
+import com.example.application.services.PolicyholderService;
 import com.example.application.services.UserService;
 import com.example.application.views.MainLayout;
 import com.example.application.views.requests.RequestsPendingContractView;
@@ -38,18 +40,20 @@ import com.vaadin.flow.component.dialog.Dialog;
 public class ContractDetailView extends VerticalLayout implements BeforeEnterObserver {
 
     @Autowired
-    private final ContractService contractService;
+    ContractService contractService;
+    @Autowired
+    PolicyholderService policyholderService;
     private Contract contract;
     private Dialog confirmDialog;
 
-    private final TextField insuranceContractNumber = new TextField("Страховой номер");
+    private final TextField insuranceContractNumber = new TextField("Номер договора");
     private final TextField insurer = new TextField("Страховщик");
     private final DatePicker startDateOfInsuranceCoverage = new DatePicker("Дата начала страхования");
     private final DatePicker endDateOfInsuranceCoverage = new DatePicker("Дата окончания страхования");
     private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
     private final ComboBox<User> supervisingUnderwriter = new ComboBox<>("Курирующий андерайтер");
     private final ComboBox<User> supervising_UOPB_employee = new ComboBox<>("Курирующий УОПБ сотрудник");
-    private final TextField policyholder = new TextField("Страхователь");
+    ComboBox<Policyholder> policyholder = new ComboBox<>("Страхователь");
     private final ComboBox<String> coveredCountries = new ComboBox<>("Покрытые страны");
     private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Покрытые риски");
     private final TextField insuredSharePolitical = new TextField("Политическое участие Страхователя в убытке");
@@ -67,9 +71,11 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     private final UserService userService;
 
-    public ContractDetailView(ContractService contractService, UserService userService) {
+    public ContractDetailView(ContractService contractService, UserService userService,
+            PolicyholderService policyholderService) {
         this.contractService = contractService;
         this.userService = userService;
+        this.policyholderService = policyholderService;
 
         Button openSuccessRequestViewButton = acceptedCreditLimits();
         Button openPendingRequestViewButton = pendingCreditLimits();
@@ -177,6 +183,11 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
         supervising_UOPB_employee.setItems(mainUOPBemployees);
         supervising_UOPB_employee.setItemLabelGenerator(User::getName);
         supervising_UOPB_employee.setValue(contract.getSupervising_UOPB_employee());
+
+        List<Policyholder> policyholders = policyholderService.getAllPolicyholders();
+        policyholder.setItems(policyholders);
+        policyholder.setItemLabelGenerator(Policyholder::getCompanyName);
+        policyholder.setValue(contract.getPolicyholder());
 
         status.setItems(StatusEnum.values());
         status.setItemLabelGenerator(StatusEnum::getDisplayName);

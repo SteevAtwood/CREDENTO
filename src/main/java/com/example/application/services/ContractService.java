@@ -86,6 +86,10 @@ public class ContractService {
         return contractsRepository.save(entity);
     }
 
+    public List<Contract> getAllContracts() {
+        return contractsRepository.findAll();
+    }
+
     // public Contract update(String insuranceContractNumber,
     // String insurer,
     // StatusEnum status,

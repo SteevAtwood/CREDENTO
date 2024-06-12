@@ -13,7 +13,9 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String insuranceContractNumber;
+    @ManyToOne
+    @JoinColumn(name = "insurance_contract_number", referencedColumnName = "id")
+    private Contract insuranceContractNumber;
     private String debitorsCountry;
     private String registrationCode;
     private BigDecimal clAmount;
@@ -32,7 +34,8 @@ public class Request {
     public Request() {
     }
 
-    public Request(String insuranceContractNumber, String debitorsCountry, String registrationCode, BigDecimal clAmount,
+    public Request(Contract insuranceContractNumber, String debitorsCountry, String registrationCode,
+            BigDecimal clAmount,
             String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
             Debtors debtor) {
         this.insuranceContractNumber = insuranceContractNumber;
@@ -50,11 +53,11 @@ public class Request {
         return id;
     }
 
-    public String getInsuranceContractNumber() {
+    public Contract getInsuranceContractNumber() {
         return insuranceContractNumber;
     }
 
-    public void setInsuranceContractNumber(String insuranceContractNumber) {
+    public void setInsuranceContractNumber(Contract insuranceContractNumber) {
         this.insuranceContractNumber = insuranceContractNumber;
     }
 

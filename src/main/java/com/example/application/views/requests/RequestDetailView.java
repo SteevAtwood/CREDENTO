@@ -39,7 +39,7 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
     private Dialog confirmDialog;
 
     private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
-    private final TextField insuranceContractNumber = new TextField("Страховой номер");
+    private final TextField insuranceContractNumber = new TextField("Номер договора");
     private final TextField debitorsCountry = new TextField("Страна дебитора");
     private final TextField registrationCode = new TextField("Регистрационный код");
     private final TextField clAmount = new TextField("Сумма CL");

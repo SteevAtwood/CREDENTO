@@ -104,7 +104,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
         h3.setText("Создание нового договора");
         h3.setWidth("100%");
         formLayout2Col.setWidth("100%");
-        insuranceContractNumber.setLabel("Страховой номер");
+        insuranceContractNumber.setLabel("Номер договора");
         insurer.setLabel("Страховщик");
         insurer.setItems("ООО «Кредендо – Ингосстрах Кредитное Страхование»");
         insurer.setValue("ООО «Кредендо – Ингосстрах Кредитное Страхование»");
