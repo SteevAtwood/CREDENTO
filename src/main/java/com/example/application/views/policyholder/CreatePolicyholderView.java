@@ -1,7 +1,8 @@
-package com.example.application.views.debtors;
+package com.example.application.views.policyholder;
 
-import com.example.application.services.DebtorService;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.application.services.PolicyholderService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -21,17 +22,18 @@ import com.vaadin.flow.router.RouteAlias;
 
 import jakarta.annotation.security.RolesAllowed;
 
-@PageTitle("Дебиторы")
-@Route(value = "create-debtor", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@PageTitle("Страхователь")
+@Route(value = "create-policyholder", layout = MainLayout.class)
+@RouteAlias(value = "create-policyholder", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
 @Uses(Icon.class)
-public class CreateDebtorView extends Composite<VerticalLayout> {
+public class CreatePolicyholderView extends Composite<VerticalLayout> {
 
-    private final DebtorService debtorService;
+    @Autowired
+    private final PolicyholderService policyholderService;
 
-    public CreateDebtorView(DebtorService debtorService) {
-        this.debtorService = debtorService;
+    public CreatePolicyholderView(PolicyholderService policyholderService) {
+        this.policyholderService = policyholderService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
@@ -41,7 +43,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         TextField informationProviderCode = new TextField();
         TextField companyRegistrationCodes = new TextField();
         TextField okvedCode = new TextField();
-        TextField debtorCompanyEmail = new TextField();
+        TextField policyholderCompanyEmail = new TextField();
         TextField companyStatus = new TextField();
         TextField ownerInformation = new TextField();
         TextField contactPersonDetails = new TextField();
@@ -57,7 +59,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         layoutColumn2.setWidth("100%");
         layoutColumn2.setMaxWidth("800px");
         layoutColumn2.setHeight("min-content");
-        h3.setText("Создание нового страхователя");
+        h3.setText("Создание нового дебитора");
         h3.setWidth("100%");
         formLayout.setWidth("100%");
 
@@ -66,7 +68,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         informationProviderCode.setLabel("Код информационного провайдера");
         companyRegistrationCodes.setLabel("Регистрационные коды компании");
         okvedCode.setLabel("Код ОКВЭД");
-        debtorCompanyEmail.setLabel("Email компании дебитора");
+        policyholderCompanyEmail.setLabel("Email компании дебитора");
         companyStatus.setLabel("Статус компании");
         ownerInformation.setLabel("Информация о владельце");
         contactPersonDetails.setLabel("Данные контактного лица");
@@ -75,7 +77,7 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         formLayout.add(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode,
-                debtorCompanyEmail, companyStatus, ownerInformation, contactPersonDetails);
+                policyholderCompanyEmail, companyStatus, ownerInformation, contactPersonDetails);
 
         buttonLayout.add(saveButton, cancelButton);
         buttonLayout.setSpacing(true);
@@ -84,20 +86,20 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         layoutColumn2.add(h3, formLayout, buttonLayout);
 
         saveButton.addClickListener(e -> {
-            debtorService.createDebtor(
+            policyholderService.createPolicyholder(
                     companyName.getValue(),
                     address.getValue(),
                     informationProviderCode.getValue(),
                     companyRegistrationCodes.getValue(),
                     okvedCode.getValue(),
-                    debtorCompanyEmail.getValue(),
+                    policyholderCompanyEmail.getValue(),
                     companyStatus.getValue(),
                     ownerInformation.getValue(),
                     contactPersonDetails.getValue());
         });
 
         cancelButton.addClickListener(e -> clearFields(companyName, address, informationProviderCode,
-                companyRegistrationCodes, okvedCode, debtorCompanyEmail, companyStatus, ownerInformation,
+                companyRegistrationCodes, okvedCode, policyholderCompanyEmail, companyStatus, ownerInformation,
                 contactPersonDetails));
     }
 

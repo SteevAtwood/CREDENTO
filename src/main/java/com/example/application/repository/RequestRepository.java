@@ -11,12 +11,22 @@ import org.springframework.data.domain.Page;
 public interface RequestRepository extends JpaRepository<Request, Integer>, JpaSpecificationExecutor<Request> {
 
   @Query(nativeQuery = true, value = """
-      select * from request where status = 'accepted' or status = 'declined' and debtor = :debtorId
-        """)
+          select * from request where status = 'accepted' or status = 'declined' and debtor = :debtorId
+      """)
   Page<Request> getAcceptedRequestsByDebtorId(Integer debtorId, Pageable pageable);
 
   @Query(nativeQuery = true, value = """
           select * from request where status = 'pending' and debtor = :debtorId
       """)
   Page<Request> getPendingRequestsByDebtorId(Integer debtorId, Pageable pageable);
+
+  @Query(nativeQuery = true, value = """
+          select * from request where status = 'accepted' or status = 'declined' and policyholder = :policyholderId
+      """)
+  Page<Request> getAcceptedRequestsByPolicyholderId(Integer policyholderId, Pageable pageable);
+
+  @Query(nativeQuery = true, value = """
+          select * from request where status = 'pending' and policyholder = :policyholderId
+      """)
+  Page<Request> getPendingRequestsByPolicyholderId(Integer policyholderId, Pageable pageable);
 }

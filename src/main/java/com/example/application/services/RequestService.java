@@ -76,12 +76,10 @@ public class RequestService {
     }
 
     public Page<Request> getAcceptedRequestsByDebtorId(Integer debtorId, Pageable pageable) {
-        System.out.println("WHERE IS MY ID ACCEPTED" + debtorId);
         return requestRepository.getAcceptedRequestsByDebtorId(debtorId, pageable);
     }
 
     public Page<Request> getPendingRequestsByDebtorId(Integer debtorId, Pageable pageable) {
-        System.out.println("WHERE IS MY ID" + debtorId);
         return requestRepository.getPendingRequestsByDebtorId(debtorId, pageable);
     }
 }

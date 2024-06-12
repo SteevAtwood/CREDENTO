@@ -2,6 +2,7 @@ package com.example.application.views.contracts;
 
 import com.example.application.services.ContractService;
 import com.example.application.services.CountryService;
+import com.example.application.services.PolicyholderService;
 import com.example.application.services.UserService;
 
 import java.sql.Date;
@@ -9,8 +10,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.example.application.data.Country;
 import com.example.application.data.DateConversionUtil;
+import com.example.application.data.Policyholder;
 import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
@@ -49,14 +53,21 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class CreateContractView extends Composite<VerticalLayout> {
 
-    private final ContractService contractService;
-    private final UserService userService;
-    private final CountryService countryService;
+    @Autowired
+    ContractService contractService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CountryService countryService;
+    @Autowired
+    PolicyholderService policyholderService;
 
-    public CreateContractView(ContractService contractService, UserService userService, CountryService countryService) {
+    public CreateContractView(ContractService contractService, UserService userService, CountryService countryService,
+            PolicyholderService policyholderService) {
         this.contractService = contractService;
         this.userService = userService;
         this.countryService = countryService;
+        this.policyholderService = policyholderService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
@@ -69,7 +80,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         ComboBox<User> supervisingUnderwriter = new ComboBox<>();
         ComboBox<User> supervisingUOPBEmployee = new ComboBox<>();
-        TextField policyholder = new TextField();
+        ComboBox<Policyholder> policyholder = new ComboBox<>();
         MultiSelectComboBox<Country> coveredCountries = new MultiSelectComboBox<>("Страны покрытия");
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
         IntegerField insuredSharePolitical = new IntegerField();
@@ -111,6 +122,11 @@ public class CreateContractView extends Composite<VerticalLayout> {
         List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBEmployee();
         supervisingUOPBEmployee.setItems(mainUOPBemployees);
         supervisingUOPBEmployee.setItemLabelGenerator(User::getName);
+
+        policyholder.setLabel("Страхователь");
+        List<Policyholder> policyholders = policyholderService.getAllPolicyholders();
+        policyholder.setItems(policyholders);
+        policyholder.setItemLabelGenerator(Policyholder::getCompanyName);
 
         policyholder.setLabel("Страхователь");
         coveredCountries.setLabel("Страны покрытия");
@@ -226,6 +242,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     : null;
             User selectedSupervisingUnderwriter = supervisingUnderwriter.getValue();
             User selectedSupervisingUOPBEmployee = supervisingUOPBEmployee.getValue();
+            Policyholder selectedPolicyholder = policyholder.getValue();
 
             Set<String> countryNames = coveredCountries.getValue().stream()
                     .map(Country::getName)
@@ -239,7 +256,7 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     DateConversionUtil.toLocalDate(endDate),
                     selectedSupervisingUnderwriter,
                     selectedSupervisingUOPBEmployee,
-                    policyholder.getValue(),
+                    selectedPolicyholder,
                     countryNames,
                     coveredRisks.getValue(),
                     insuredSharePolitical.getValue().toString(),

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.Contract;
+import com.example.application.data.Policyholder;
 import com.example.application.data.User;
 import com.example.application.data.coveredRisksEnum.CoveredRisksEnum;
 import com.example.application.data.statusEnum.StatusEnum;
@@ -32,7 +33,7 @@ public class ContractService {
             LocalDate endDateOfInsuranceCoverage,
             User supervisingUnderwriter,
             User supervisingUOPBEmployee,
-            String policyholder,
+            Policyholder policyholder,
             Set<String> coveredCountries,
             CoveredRisksEnum coveredRisks,
             String insuredSharePolitical,

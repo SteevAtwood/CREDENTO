@@ -25,7 +25,9 @@ public class Contract {
     @ManyToOne
     @JoinColumn(name = "supervising_UOPB_employee", referencedColumnName = "id")
     private User supervising_UOPB_employee;
-    private String policyholder;
+    @ManyToOne
+    @JoinColumn(name = "policyholder", referencedColumnName = "id")
+    private Policyholder policyholder;
     private String coveredCountries;
     private String insuredSharePolitical;
     private Integer waitingPeriodPolitical;
@@ -48,7 +50,7 @@ public class Contract {
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
             LocalDate endDateOfInsuranceCoverage, User supervisingUnderwriter, User supervising_UOPB_employee,
-            String policyholder, String coveredCountries, CoveredRisksEnum coveredRisks,
+            Policyholder policyholder, String coveredCountries, CoveredRisksEnum coveredRisks,
             String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
             Integer waitingPeriodCommercial, Integer maxCommercialCreditPeriod, String clientName) {
@@ -133,11 +135,11 @@ public class Contract {
         this.supervising_UOPB_employee = supervising_UOPB_employee;
     }
 
-    public String getPolicyholder() {
+    public Policyholder getPolicyholder() {
         return policyholder;
     }
 
-    public void setPolicyholder(String policyholder) {
+    public void setPolicyholder(Policyholder policyholder) {
         this.policyholder = policyholder;
     }
 

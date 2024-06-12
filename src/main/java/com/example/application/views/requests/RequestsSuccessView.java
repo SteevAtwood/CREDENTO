@@ -223,9 +223,11 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
         grid.addColumn("status").setAutoWidth(true).setHeader("Статус");
         grid.addColumn("adjustmentPossibility").setAutoWidth(true).setHeader("Возможность корректировки");
 
-        grid.setItems(query -> requestService.getAcceptedRequestsByDebtorId(debtorId,
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
+        // grid.setItems(query ->
+        // requestService.getAcceptedRequestsByRegistrationCode(registrationCode,
+        // PageRequest.of(query.getPage(), query.getPageSize(),
+        // VaadinSpringDataHelpers.toSpringDataSort(query)))
+        // .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
