@@ -53,6 +53,8 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
     private final ComboBox<StatusEnum> status = new ComboBox<>("Статус");
     private final ComboBox<User> supervisingUnderwriter = new ComboBox<>("Курирующий андерайтер");
     private final ComboBox<User> supervising_UOPB_employee = new ComboBox<>("Курирующий УОПБ сотрудник");
+    private final ComboBox<User> underwriterOne = new ComboBox<>("Ответственный андерайтер 1");
+    private final ComboBox<User> underwriterTwo = new ComboBox<>("Ответственный андерайтер 2");
     ComboBox<Policyholder> policyholder = new ComboBox<>("Страхователь");
     private final ComboBox<String> coveredCountries = new ComboBox<>("Покрытые страны");
     private final ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>("Покрытые риски");
@@ -88,7 +90,8 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
         formLayout.setWidth("100%");
         formLayout.add(insuranceContractNumber, insurer, startDateOfInsuranceCoverage,
                 endDateOfInsuranceCoverage, status,
-                supervisingUnderwriter, supervising_UOPB_employee, policyholder, coveredCountries, coveredRisks,
+                supervisingUnderwriter, supervising_UOPB_employee, underwriterOne, underwriterTwo, policyholder,
+                coveredCountries, coveredRisks,
                 insuredSharePolitical, waitingPeriodPolitical, maxPoliticalCreditPeriod, insuredShareCommercial,
                 waitingPeriodCommercial, maxCommercialCreditPeriod, clientName);
 
@@ -183,6 +186,16 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
         supervising_UOPB_employee.setItems(mainUOPBemployees);
         supervising_UOPB_employee.setItemLabelGenerator(User::getName);
         supervising_UOPB_employee.setValue(contract.getSupervising_UOPB_employee());
+
+        List<User> responsibleUnderwriterOne = userService.getUsersWithRoleUnderwriter();
+        underwriterOne.setItems(responsibleUnderwriterOne);
+        underwriterOne.setItemLabelGenerator(User::getName);
+        underwriterOne.setValue(contract.getUnderwriterOne());
+
+        List<User> responsibleUnderwriterTwo = userService.getUsersWithRoleUnderwriter();
+        underwriterTwo.setItems(responsibleUnderwriterTwo);
+        underwriterTwo.setItemLabelGenerator(User::getName);
+        underwriterTwo.setValue(contract.getUnderwriterOne());
 
         List<Policyholder> policyholders = policyholderService.getAllPolicyholders();
         policyholder.setItems(policyholders);
