@@ -30,7 +30,7 @@ import jakarta.annotation.security.RolesAllowed;
 public class CreatePolicyholderView extends Composite<VerticalLayout> {
 
     @Autowired
-    private final PolicyholderService policyholderService;
+    PolicyholderService policyholderService;
 
     public CreatePolicyholderView(PolicyholderService policyholderService) {
         this.policyholderService = policyholderService;

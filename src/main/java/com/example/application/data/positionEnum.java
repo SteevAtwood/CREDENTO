@@ -3,8 +3,8 @@ package com.example.application.data;
 public class positionEnum {
     public enum PositionEnum {
 
-        mainUndewrither("Главный андеррайтер"),
-        undewrither("Андеррайтер"),
+        mainUnderwriter("Главный андеррайтер"),
+        underwriter("Андеррайтер"),
         supervisingUOPBemployee("Главный УОПБ сотрудник"),
         UOPBemployee("УОПБ сотрудник"),
         supervisingDAemployee("Главный ДА сотрудник"),

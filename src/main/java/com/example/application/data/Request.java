@@ -26,6 +26,7 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "debtor", referencedColumnName = "id")
     private Debtors debtor;
+    private String comment;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -37,7 +38,7 @@ public class Request {
     public Request(Contract insuranceContractNumber, String debitorsCountry, String registrationCode,
             BigDecimal clAmount,
             String clCurrency, String clTermsAndConditions, String adjustmentPossibility, RequestStatusEnum status,
-            Debtors debtor) {
+            Debtors debtor, String comment) {
         this.insuranceContractNumber = insuranceContractNumber;
         this.debitorsCountry = debitorsCountry;
         this.registrationCode = registrationCode;
@@ -47,6 +48,7 @@ public class Request {
         this.adjustmentPossibility = adjustmentPossibility;
         this.status = status;
         this.debtor = debtor;
+        this.comment = comment;
     }
 
     public Integer getId() {
@@ -124,4 +126,13 @@ public class Request {
     public void setDebtor(Debtors debtor) {
         this.debtor = debtor;
     }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
 }

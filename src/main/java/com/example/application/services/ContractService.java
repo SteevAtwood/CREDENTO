@@ -33,6 +33,8 @@ public class ContractService {
             LocalDate endDateOfInsuranceCoverage,
             User supervisingUnderwriter,
             User supervisingUOPBEmployee,
+            User underwriterOne,
+            User underwriterTwo,
             Policyholder policyholder,
             Set<String> coveredCountries,
             CoveredRisksEnum coveredRisks,
@@ -52,6 +54,8 @@ public class ContractService {
         contract.setEndDateOfInsuranceCoverage(endDateOfInsuranceCoverage);
         contract.setSupervisingUnderwriter(supervisingUnderwriter);
         contract.setSupervising_UOPB_employee(supervisingUOPBEmployee);
+        contract.setUnderwriterOne(underwriterOne);
+        contract.setUnderwriterTwo(underwriterTwo);
         contract.setPolicyholder(policyholder);
 
         String countries = String.join(",", coveredCountries);

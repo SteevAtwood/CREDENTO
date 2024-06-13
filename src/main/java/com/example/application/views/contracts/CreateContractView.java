@@ -80,6 +80,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         ComboBox<User> supervisingUnderwriter = new ComboBox<>();
         ComboBox<User> supervisingUOPBEmployee = new ComboBox<>();
+        ComboBox<User> underwriterOne = new ComboBox<>();
+        ComboBox<User> underwriterTwo = new ComboBox<>();
         ComboBox<Policyholder> policyholder = new ComboBox<>();
         MultiSelectComboBox<Country> coveredCountries = new MultiSelectComboBox<>("Страны покрытия");
         ComboBox<CoveredRisksEnum> coveredRisks = new ComboBox<>();
@@ -122,6 +124,16 @@ public class CreateContractView extends Composite<VerticalLayout> {
         List<User> mainUOPBemployees = userService.getUsersWithRoleSupervisingUOPBEmployee();
         supervisingUOPBEmployee.setItems(mainUOPBemployees);
         supervisingUOPBEmployee.setItemLabelGenerator(User::getName);
+
+        underwriterOne.setLabel("Ответственный андерайтер 1");
+        List<User> underwritersOne = userService.getUsersWithRoleUnderwriter();
+        underwriterOne.setItems(underwritersOne);
+        underwriterOne.setItemLabelGenerator(User::getName);
+
+        underwriterTwo.setLabel("Ответственный андерайтер 2");
+        List<User> underwritersTwo = userService.getUsersWithRoleUnderwriter();
+        underwriterTwo.setItems(underwritersTwo);
+        underwriterTwo.setItemLabelGenerator(User::getName);
 
         policyholder.setLabel("Страхователь");
         List<Policyholder> policyholders = policyholderService.getAllPolicyholders();
@@ -218,6 +230,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
 
         formLayout2Col.add(supervisingUnderwriter);
         formLayout2Col.add(supervisingUOPBEmployee);
+        formLayout2Col.add(underwriterOne);
+        formLayout2Col.add(underwriterTwo);
         formLayout2Col.add(policyholder);
         formLayout2Col.add(coveredCountries);
         formLayout2Col.add(coveredRisks);
@@ -242,6 +256,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     : null;
             User selectedSupervisingUnderwriter = supervisingUnderwriter.getValue();
             User selectedSupervisingUOPBEmployee = supervisingUOPBEmployee.getValue();
+            User selectedUnderwriter1 = underwriterOne.getValue();
+            User selectedUnderwriter2 = underwriterTwo.getValue();
             Policyholder selectedPolicyholder = policyholder.getValue();
 
             Set<String> countryNames = coveredCountries.getValue().stream()
@@ -256,6 +272,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     DateConversionUtil.toLocalDate(endDate),
                     selectedSupervisingUnderwriter,
                     selectedSupervisingUOPBEmployee,
+                    selectedUnderwriter1,
+                    selectedUnderwriter2,
                     selectedPolicyholder,
                     countryNames,
                     coveredRisks.getValue(),
@@ -278,6 +296,8 @@ public class CreateContractView extends Composite<VerticalLayout> {
             endDateOfInsuranceCoverage.clear();
             supervisingUnderwriter.clear();
             supervisingUOPBEmployee.clear();
+            underwriterOne.clear();
+            underwriterTwo.clear();
             policyholder.clear();
             coveredCountries.clear();
             coveredRisks.clear();

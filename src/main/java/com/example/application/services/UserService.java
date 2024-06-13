@@ -47,6 +47,10 @@ public class UserService {
         return userRepository.getUsersWithRoleMainUnderwriter();
     }
 
+    public List<User> getUsersWithRoleUnderwriter() {
+        return userRepository.getUsersWithRoleUnderwriter();
+    }
+
     public List<User> getUsersWithRoleSupervisingUOPBEmployee() {
         return userRepository.getUsersWithRoleSupervisingUOPBEmployee();
     }

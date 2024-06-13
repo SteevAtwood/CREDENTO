@@ -35,6 +35,8 @@ CREATE TABLE `contract` (
   `end_date_of_insurance_coverage` DATE DEFAULT NULL,
   `supervising_underwriter` INT DEFAULT NULL, 
   `supervising_UOPB_employee` INT DEFAULT NULL, 
+  `underwriter_one` INT DEFAULT NULL, 
+  `underwriter_two` INT DEFAULT NULL, 
   `policyholder` INT DEFAULT NULL, 
   `covered_countries` TEXT DEFAULT NULL,
   `covered_risks` ENUM('political', 'commercial', 'both') DEFAULT NULL,
@@ -62,6 +64,7 @@ CREATE TABLE `request` (
     `adjustment_possibility` TEXT DEFAULT NULL,
     `status` ENUM('pending', 'accepted', 'declined') DEFAULT NULL,
     `debtor` INT DEFAULT NULL, 
+    `comment` TEXT DEFAULT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT FK_debtor_request FOREIGN KEY (`debtor`) REFERENCES `debtors`(`id`),
     CONSTRAINT FK_request_insurance_contract_number FOREIGN KEY (`insurance_contract_number`) REFERENCES `contract`(`id`)

@@ -22,6 +22,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -52,6 +53,7 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
     private final TextField clTermsAndConditions = new TextField("Условия CL");
     private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
     private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
+    private final TextArea comment = new TextArea("Комментарий");
     private final Button cancel = new Button("Отмена");
     private final Button save = new Button("Сохранить");
     private final Button delete = new Button("Удалить");
@@ -66,7 +68,7 @@ public class RequestDetailView extends VerticalLayout implements BeforeEnterObse
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("100%");
         formLayout.add(debtor, insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
-                clTermsAndConditions, adjustmentPossibility, status);
+                clTermsAndConditions, adjustmentPossibility, status, comment);
 
         add(formLayout);
         setWidth("100%");

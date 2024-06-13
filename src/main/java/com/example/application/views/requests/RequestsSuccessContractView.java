@@ -23,12 +23,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 @AnonymousAllowed
@@ -38,7 +37,8 @@ public class RequestsSuccessContractView extends Div implements BeforeEnterObser
 
     private Grid<Request> grid;
     private Filters filters;
-    private final RequestService requestService;
+    @Autowired
+    RequestService requestService;
     private String insuranceContractNumber;
 
     public RequestsSuccessContractView(RequestService requestService) {

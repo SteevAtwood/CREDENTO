@@ -13,9 +13,14 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
   User findByUsername(String username);
 
   @Query(nativeQuery = true, value = """
-        select * from user where position = 'mainUndewrither'
+        select * from user where position = 'mainUnderwriter'
       """)
   List<User> getUsersWithRoleMainUnderwriter();
+
+  @Query(nativeQuery = true, value = """
+        select * from user where position = 'underwriter'
+      """)
+  List<User> getUsersWithRoleUnderwriter();
 
   @Query(nativeQuery = true, value = """
         select * from user where position = 'supervisingUOPBemployee'

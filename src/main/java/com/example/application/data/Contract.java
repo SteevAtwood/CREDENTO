@@ -25,6 +25,15 @@ public class Contract {
     @ManyToOne
     @JoinColumn(name = "supervising_UOPB_employee", referencedColumnName = "id")
     private User supervising_UOPB_employee;
+
+    @ManyToOne
+    @JoinColumn(name = "underwriter_one", referencedColumnName = "id")
+    private User underwriterOne;
+
+    @ManyToOne
+    @JoinColumn(name = "underwriter_two", referencedColumnName = "id")
+    private User underwriterTwo;
+
     @ManyToOne
     @JoinColumn(name = "policyholder", referencedColumnName = "id")
     private Policyholder policyholder;
@@ -50,6 +59,7 @@ public class Contract {
     public Contract(String insuranceContractNumber, String insurer, StatusEnum status,
             LocalDate startDateOfInsuranceCoverage,
             LocalDate endDateOfInsuranceCoverage, User supervisingUnderwriter, User supervising_UOPB_employee,
+            User underwriterOne, User underwriterTwo,
             Policyholder policyholder, String coveredCountries, CoveredRisksEnum coveredRisks,
             String insuredSharePolitical,
             Integer waitingPeriodPolitical, Integer maxPoliticalCreditPeriod, String insuredShareCommercial,
@@ -61,6 +71,8 @@ public class Contract {
         this.endDateOfInsuranceCoverage = endDateOfInsuranceCoverage;
         this.supervisingUnderwriter = supervisingUnderwriter;
         this.supervising_UOPB_employee = supervising_UOPB_employee;
+        this.underwriterOne = underwriterOne;
+        this.underwriterTwo = underwriterTwo;
         this.policyholder = policyholder;
         this.coveredCountries = coveredCountries;
         this.coveredRisks = coveredRisks;
@@ -133,6 +145,22 @@ public class Contract {
 
     public void setSupervising_UOPB_employee(User supervising_UOPB_employee) {
         this.supervising_UOPB_employee = supervising_UOPB_employee;
+    }
+
+    public User getUnderwriterOne() {
+        return underwriterOne;
+    }
+
+    public void setUnderwriterOne(User underwriterOne) {
+        this.underwriterOne = underwriterOne;
+    }
+
+    public User getUnderwriterTwo() {
+        return underwriterTwo;
+    }
+
+    public void setUnderwriterTwo(User underwriterTwo) {
+        this.underwriterTwo = underwriterTwo;
     }
 
     public Policyholder getPolicyholder() {
