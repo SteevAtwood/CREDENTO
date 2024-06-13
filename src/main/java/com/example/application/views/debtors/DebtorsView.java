@@ -1,7 +1,9 @@
 package com.example.application.views.debtors;
 
+import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
 import com.example.application.data.statusEnum.StatusEnum;
+import com.example.application.services.ContractService;
 import com.example.application.services.DebtorService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -11,23 +13,28 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import jakarta.persistence.criteria.Predicate;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
-import java.util.*;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AnonymousAllowed
 @Route(value = "debtors", layout = MainLayout.class)
@@ -36,33 +43,78 @@ import org.springframework.data.jpa.domain.Specification;
 public class DebtorsView extends Div {
 
     private final Grid<Debtors> grid;
-    private final DebtorService debtorService;
+    @Autowired
+    DebtorService debtorService;
+    @Autowired
+    ContractService contractService;
     private final Filters filters;
 
-    public DebtorsView(DebtorService debtorService) {
+    public DebtorsView(DebtorService debtorService, ContractService contractService) {
         this.debtorService = debtorService;
+        this.contractService = contractService;
         this.grid = createGrid();
-        this.filters = new Filters(this::refreshGrid);
+        this.filters = new Filters(this::refreshGrid, debtorService, contractService);
 
-        VerticalLayout layout = new VerticalLayout(filters, grid);
+        setSizeFull();
+        addClassNames("request-view");
+
+        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, grid);
         layout.setSizeFull();
+        layout.setPadding(false);
+        layout.setSpacing(false);
         add(layout);
+    }
+
+    private HorizontalLayout createMobileFilters() {
+        // Mobile version
+        HorizontalLayout mobileFilters = new HorizontalLayout();
+        mobileFilters.setWidthFull();
+        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
+                LumoUtility.AlignItems.CENTER);
+        mobileFilters.addClassName("mobile-filters");
+
+        Icon mobileIcon = new Icon("lumo");
+        Span filtersHeading = new Span("Filters");
+        mobileFilters.add(mobileIcon, filtersHeading);
+        mobileFilters.setFlexGrow(1, filtersHeading);
+        mobileFilters.addClickListener(e -> {
+            if (filters.getClassNames().contains("visible")) {
+                filters.removeClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
+            } else {
+                filters.addClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
+            }
+        });
+        return mobileFilters;
     }
 
     public static class Filters extends Div implements Specification<Debtors> {
 
+        @Autowired
+        DebtorService debtorService;
+        @Autowired
+        ContractService contractService;
+
+        private final ComboBox<Contract> contractNumber = new ComboBox<>("Номер договора");
         private final TextField companyName = new TextField("Название компании");
+        private final TextField policyholderCompanyName = new TextField("Страхователь");
         private final TextField address = new TextField("Адрес");
         private final TextField informationProviderCode = new TextField("Код информационного провайдера");
         private final TextField companyRegistrationCodes = new TextField("Регистрационные коды компании");
         private final TextField okvedCode = new TextField("Код ОКВЭД");
         private final ComboBox<StatusEnum> status = new ComboBox<>("Статус компании");
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, DebtorService debtorService, ContractService contractService) {
+            this.debtorService = debtorService;
+            this.contractService = contractService;
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+
+            contractNumber.setItems(contractService.getAllContracts());
+            contractNumber.setItemLabelGenerator(Contract::getInsuranceContractNumber);
 
             status.setItems(StatusEnum.values());
 
@@ -70,8 +122,8 @@ public class DebtorsView extends Div {
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode,
-                    status);
+            filterLayout.add(contractNumber, companyName, policyholderCompanyName, address, informationProviderCode,
+                    companyRegistrationCodes, okvedCode, status);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -94,7 +146,9 @@ public class DebtorsView extends Div {
         }
 
         private void clearFields() {
+            contractNumber.clear();
             companyName.clear();
+            policyholderCompanyName.clear();
             address.clear();
             informationProviderCode.clear();
             companyRegistrationCodes.clear();
@@ -116,12 +170,22 @@ public class DebtorsView extends Div {
         public Predicate toPredicate(Root<Debtors> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (contractNumber.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("policyholder"), contractNumber.getValue()));
+            }
             if (!companyName.isEmpty()) {
                 String lowerCaseFilter = companyName.getValue().toLowerCase();
                 Predicate nameMatch = criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("companyName")),
                         lowerCaseFilter + "%");
                 predicates.add(nameMatch);
+            }
+            if (!policyholderCompanyName.isEmpty()) {
+                String lowerCaseFilter = policyholderCompanyName.getValue().toLowerCase();
+                Predicate policyholderMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("policyholderCompanyName")),
+                        lowerCaseFilter + "%");
+                predicates.add(policyholderMatch);
             }
             if (!address.isEmpty()) {
                 String lowerCaseFilter = address.getValue().toLowerCase();
@@ -161,6 +225,10 @@ public class DebtorsView extends Div {
 
     private Grid<Debtors> createGrid() {
         Grid<Debtors> grid = new Grid<>(Debtors.class, false);
+        grid.addColumn(debtors -> debtors.getInsuranceContractNumber().getInsuranceContractNumber())
+                .setAutoWidth(true)
+                .setHeader("Номер договора");
+
         grid.addColumn("companyName").setAutoWidth(true).setHeader("Название компании");
         grid.addColumn("address").setAutoWidth(true).setHeader("Адрес");
         grid.addColumn("informationProviderCode").setAutoWidth(true).setHeader("Код информационного провайдера");
@@ -169,8 +237,7 @@ public class DebtorsView extends Div {
         grid.addColumn("companyStatus").setAutoWidth(true).setHeader("Статус компании");
 
         grid.setItems(query -> debtorService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
-                filters).stream());
+                PageRequest.of(query.getPage(), query.getPageSize()), filters).stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
@@ -178,7 +245,7 @@ public class DebtorsView extends Div {
             Debtors selectedDebtor = event.getItem();
             String debtorId = String.valueOf(selectedDebtor.getId());
             getUI().ifPresent(ui -> ui.navigate("debtors/" + debtorId));
-            System.out.println("debtors  ВЫВОД ЧТОБЫ ВИДНО ЧТО НЕ NULL" + debtorId);
+            System.out.println("Выбранный дебитор: " + debtorId);
         });
 
         return grid;

@@ -9,6 +9,9 @@ public class Debtors {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "insurance_contract_number", referencedColumnName = "id")
+    private Contract insuranceContractNumber;
     private String companyName;
     private String address;
     private String informationProviderCode;
@@ -23,9 +26,11 @@ public class Debtors {
 
     }
 
-    public Debtors(String companyName, String address, String informationProviderCode, String companyRegistrationCodes,
+    public Debtors(Contract insuranceContractNumber, String companyName, String address, String informationProviderCode,
+            String companyRegistrationCodes,
             String okvedCode, String debtorCompanyEmail, String companyStatus, String ownerInformation,
             String contactPersonDetails) {
+        this.insuranceContractNumber = insuranceContractNumber;
         this.companyName = companyName;
         this.address = address;
         this.informationProviderCode = informationProviderCode;
@@ -39,6 +44,14 @@ public class Debtors {
 
     public Integer getId() {
         return id;
+    }
+
+    public Contract getInsuranceContractNumber() {
+        return insuranceContractNumber;
+    }
+
+    public void setInsuranceContractNumber(Contract insuranceContractNumber) {
+        this.insuranceContractNumber = insuranceContractNumber;
     }
 
     public String getCompanyName() {

@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
 import com.example.application.data.Request;
 import com.example.application.repository.DebtorRepository;
@@ -25,11 +26,13 @@ public class DebtorService {
     RequestRepository requestRepository;
 
     @Transactional
-    public Debtors createDebtor(String companyName, String address, String informationProviderCode,
+    public Debtors createDebtor(Contract insuranceContractNumber, String companyName, String address,
+            String informationProviderCode,
             String companyRegistrationCodes, String okvedCode, String debtorCompanyEmail, String companyStatus,
             String ownerInformation, String contactPersonDetails) {
 
         Debtors debtor = new Debtors();
+        debtor.setInsuranceContractNumber(insuranceContractNumber);
         debtor.setAddress(address);
         debtor.setCompanyName(companyName);
         debtor.setCompanyRegistrationCodes(companyRegistrationCodes);
@@ -73,6 +76,10 @@ public class DebtorService {
 
     public List<Debtors> getDebtors() {
         return debtorRepository.findAll();
+    }
+
+    public List<Debtors> getDebtorsByPolicyholderCompanyName(String companyName) {
+        return debtorRepository.getPolicyholdersByDebtor(companyName);
     }
 
     public Page<Request> getSuccesRequestsByDebtorId(Integer debtorId, Pageable pageable) {

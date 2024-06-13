@@ -1,17 +1,3 @@
-CREATE TABLE `debtors` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `company_name` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `information_provider_code` varchar(255) DEFAULT NULL,
-  `company_registration_codes` varchar(255) DEFAULT NULL,
-  `okved_code` varchar(255) DEFAULT NULL,
-  `debtor_company_email` varchar(255) DEFAULT NULL,
-  `company_status` TEXT DEFAULT NULL,
-  `owner_information` TEXT DEFAULT NULL,
-  `contact_person_details` TEXT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `policyholder` (
   `id` int NOT NULL AUTO_INCREMENT,
   `company_name` varchar(255) DEFAULT NULL,
@@ -51,6 +37,23 @@ CREATE TABLE `contract` (
   CONSTRAINT FK_supervising_underwriter FOREIGN KEY (`supervising_underwriter`) REFERENCES `user`(`id`), 
   CONSTRAINT FK_supervising_UOPB_employee FOREIGN KEY (`supervising_UOPB_employee`) REFERENCES `user`(`id`),
   CONSTRAINT FK_policyholder FOREIGN KEY (`policyholder`) REFERENCES `policyholder`(`id`)
+);
+
+
+CREATE TABLE `debtors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `insurance_contract_number` INT DEFAULT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `information_provider_code` varchar(255) DEFAULT NULL,
+  `company_registration_codes` varchar(255) DEFAULT NULL,
+  `okved_code` varchar(255) DEFAULT NULL,
+  `debtor_company_email` varchar(255) DEFAULT NULL,
+  `company_status` TEXT DEFAULT NULL,
+  `owner_information` TEXT DEFAULT NULL,
+  `contact_person_details` TEXT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT FK_debtor_insurance_contract_number FOREIGN KEY (`insurance_contract_number`) REFERENCES `contract`(`id`)
 );
 
 CREATE TABLE `request` (

@@ -1,11 +1,18 @@
 package com.example.application.views.debtors;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.example.application.data.Contract;
+import com.example.application.services.ContractService;
 import com.example.application.services.DebtorService;
 
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
@@ -28,14 +35,19 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class CreateDebtorView extends Composite<VerticalLayout> {
 
-    private final DebtorService debtorService;
+    @Autowired
+    DebtorService debtorService;
+    @Autowired
+    ContractService contractService;
 
-    public CreateDebtorView(DebtorService debtorService) {
+    public CreateDebtorView(DebtorService debtorService, ContractService contractService) {
         this.debtorService = debtorService;
+        this.contractService = contractService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H3 h3 = new H3();
         FormLayout formLayout = new FormLayout();
+        ComboBox<Contract> insuranceContractNumber = new ComboBox<>();
         TextField companyName = new TextField();
         TextField address = new TextField();
         TextField informationProviderCode = new TextField();
@@ -61,6 +73,11 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         h3.setWidth("100%");
         formLayout.setWidth("100%");
 
+        insuranceContractNumber.setLabel("Номер договора");
+        List<Contract> contracts = contractService.getAllContracts();
+        insuranceContractNumber.setItems(contracts);
+        insuranceContractNumber.setItemLabelGenerator(Contract::getInsuranceContractNumber);
+
         companyName.setLabel("Название компании");
         address.setLabel("Адрес");
         informationProviderCode.setLabel("Код информационного провайдера");
@@ -74,7 +91,8 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        formLayout.add(companyName, address, informationProviderCode, companyRegistrationCodes, okvedCode,
+        formLayout.add(insuranceContractNumber, companyName, address, informationProviderCode, companyRegistrationCodes,
+                okvedCode,
                 debtorCompanyEmail, companyStatus, ownerInformation, contactPersonDetails);
 
         buttonLayout.add(saveButton, cancelButton);
@@ -84,7 +102,11 @@ public class CreateDebtorView extends Composite<VerticalLayout> {
         layoutColumn2.add(h3, formLayout, buttonLayout);
 
         saveButton.addClickListener(e -> {
+
+            Contract selectedInsuranceContractNumber = insuranceContractNumber.getValue();
             debtorService.createDebtor(
+
+                    selectedInsuranceContractNumber,
                     companyName.getValue(),
                     address.getValue(),
                     informationProviderCode.getValue(),
