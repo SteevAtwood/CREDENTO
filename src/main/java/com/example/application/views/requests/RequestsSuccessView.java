@@ -30,6 +30,7 @@ import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -40,8 +41,10 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
 
     private Grid<Request> grid;
     private Filters filters;
-    private final RequestService requestService;
-    private final DebtorService debtorService;
+    @Autowired
+    RequestService requestService;
+    @Autowired
+    DebtorService debtorService;
     private Integer debtorId;
 
     public RequestsSuccessView(RequestService requestService, DebtorService debtorService) {
@@ -85,7 +88,8 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
 
     public static class Filters extends Div implements Specification<Request> {
 
-        private final DebtorService debtorService;
+        @Autowired
+        DebtorService debtorService;
 
         private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
         private final TextField contractNumber = new TextField("Номер договора");
@@ -214,7 +218,9 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
         grid.addColumn(request -> request.getDebtor().getCompanyName())
                 .setAutoWidth(true)
                 .setHeader("Дебитор");
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
+        grid.addColumn(request -> request.getInsuranceContractNumber().getInsuranceContractNumber())
+                .setAutoWidth(true)
+                .setHeader("Номер договора");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма");
@@ -223,11 +229,9 @@ public class RequestsSuccessView extends Div implements BeforeEnterObserver {
         grid.addColumn("status").setAutoWidth(true).setHeader("Статус");
         grid.addColumn("adjustmentPossibility").setAutoWidth(true).setHeader("Возможность корректировки");
 
-        // grid.setItems(query ->
-        // requestService.getAcceptedRequestsByRegistrationCode(registrationCode,
-        // PageRequest.of(query.getPage(), query.getPageSize(),
-        // VaadinSpringDataHelpers.toSpringDataSort(query)))
-        // .stream());
+        grid.setItems(query -> requestService.getAcceptedRequestsByDebtorId(debtorId,
+                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
+                .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 

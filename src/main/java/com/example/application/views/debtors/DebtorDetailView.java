@@ -97,7 +97,7 @@ public class DebtorDetailView extends VerticalLayout implements BeforeEnterObser
     }
 
     private Button acceptedCreditLimits() {
-        Button button = new Button("Одобренные кредитные лимиты", event -> {
+        Button button = new Button("Рассмотренные кредитные лимиты", event -> {
             if (debtor != null && debtor.getId() != null) {
                 String debtorId = String.valueOf(debtor.getId());
                 RouteParameters routeParameters = new RouteParameters("debtorId", debtorId);

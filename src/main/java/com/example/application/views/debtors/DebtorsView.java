@@ -1,7 +1,7 @@
 package com.example.application.views.debtors;
 
-import com.example.application.data.Contract;
 import com.example.application.data.Debtors;
+import com.example.application.data.Policyholder;
 import com.example.application.data.statusEnum.StatusEnum;
 import com.example.application.services.ContractService;
 import com.example.application.services.DebtorService;
@@ -96,7 +96,7 @@ public class DebtorsView extends Div {
         @Autowired
         ContractService contractService;
 
-        private final ComboBox<Contract> contractNumber = new ComboBox<>("Номер договора");
+        private final ComboBox<Policyholder> policyholder = new ComboBox<>("Страхователь");
         private final TextField companyName = new TextField("Название компании");
         private final TextField policyholderCompanyName = new TextField("Страхователь");
         private final TextField address = new TextField("Адрес");
@@ -113,8 +113,9 @@ public class DebtorsView extends Div {
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
 
-            contractNumber.setItems(contractService.getAllContracts());
-            contractNumber.setItemLabelGenerator(Contract::getInsuranceContractNumber);
+            // Assuming you have a method to get all policyholders
+            // policyholder.setItems(debtorService.getAllPolicyholders());
+            // policyholder.setItemLabelGenerator(Policyholder::getName);
 
             status.setItems(StatusEnum.values());
 
@@ -122,8 +123,8 @@ public class DebtorsView extends Div {
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(contractNumber, companyName, policyholderCompanyName, address, informationProviderCode,
-                    companyRegistrationCodes, okvedCode, status);
+            filterLayout.add(policyholder, companyName, address, informationProviderCode, companyRegistrationCodes,
+                    okvedCode, status);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -146,7 +147,7 @@ public class DebtorsView extends Div {
         }
 
         private void clearFields() {
-            contractNumber.clear();
+            policyholder.clear();
             companyName.clear();
             policyholderCompanyName.clear();
             address.clear();
@@ -170,8 +171,8 @@ public class DebtorsView extends Div {
         public Predicate toPredicate(Root<Debtors> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (contractNumber.getValue() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("policyholder"), contractNumber.getValue()));
+            if (policyholder.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("policyholder"), policyholder.getValue()));
             }
             if (!companyName.isEmpty()) {
                 String lowerCaseFilter = companyName.getValue().toLowerCase();
@@ -225,9 +226,11 @@ public class DebtorsView extends Div {
 
     private Grid<Debtors> createGrid() {
         Grid<Debtors> grid = new Grid<>(Debtors.class, false);
-        grid.addColumn(debtors -> debtors.getInsuranceContractNumber().getInsuranceContractNumber())
-                .setAutoWidth(true)
-                .setHeader("Номер договора");
+        // grid.addColumn(debtors ->
+        // debtors.getInsuranceContract().getPolicyholder().getName()) // Adjust based
+        // on your method
+        // .setAutoWidth(true)
+        // .setHeader("Страхователь");
 
         grid.addColumn("companyName").setAutoWidth(true).setHeader("Название компании");
         grid.addColumn("address").setAutoWidth(true).setHeader("Адрес");
@@ -250,6 +253,10 @@ public class DebtorsView extends Div {
 
         return grid;
     }
+
+    // List<Debtors> filteredDebtors = debtorService
+    // .getDebtorsByPolicyholderCompanyName(filters.policyholderCompanyName.getValue());
+    // grid.setItems(filteredDebtors);
 
     private void refreshGrid() {
         grid.getDataProvider().refreshAll();

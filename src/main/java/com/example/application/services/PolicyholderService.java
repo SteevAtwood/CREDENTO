@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.application.data.Policyholder;
-import com.example.application.data.Request;
 import com.example.application.repository.PolicyholderRepository;
 import com.example.application.repository.RequestRepository;
 
@@ -70,10 +69,6 @@ public class PolicyholderService {
 
     public List<Policyholder> getPolicyholders() {
         return policyholderRepository.findAll();
-    }
-
-    public Page<Request> getSuccesRequestsByPolicyholderId(Integer policyholderId, Pageable pageable) {
-        return requestRepository.getAcceptedRequestsByPolicyholderId(policyholderId, pageable);
     }
 
     public List<Policyholder> getAllPolicyholders() {

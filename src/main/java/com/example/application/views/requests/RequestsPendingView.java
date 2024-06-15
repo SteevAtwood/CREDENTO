@@ -214,7 +214,9 @@ public class RequestsPendingView extends Div implements BeforeEnterObserver {
         grid.addColumn(request -> request.getDebtor().getCompanyName())
                 .setAutoWidth(true)
                 .setHeader("Дебитор");
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
+        grid.addColumn(request -> request.getInsuranceContractNumber().getInsuranceContractNumber())
+                .setAutoWidth(true)
+                .setHeader("Номер договора");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
         grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма");

@@ -83,4 +83,12 @@ public class RequestService {
     public Page<Request> getPendingRequestsByDebtorId(Integer debtorId, Pageable pageable) {
         return requestRepository.getPendingRequestsByDebtorId(debtorId, pageable);
     }
+
+    public Page<Request> getAcceptedRequestsByContract(Integer insuranceContractNumber, Pageable pageable) {
+        return requestRepository.getAcceptedRequestsByContract(insuranceContractNumber, pageable);
+    }
+
+    public Page<Request> getPendingRequestsByContract(Integer insuranceContractNumber, Pageable pageable) {
+        return requestRepository.getPendingRequestsByContract(insuranceContractNumber, pageable);
+    }
 }
