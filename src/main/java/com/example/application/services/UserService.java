@@ -28,7 +28,7 @@ public class UserService {
         user.setUsername(username);
         user.setName(name);
         user.setPosition(position);
-        user.setHashedPassword(hashPassword(user.getHashedPassword()));
+        user.setHashedPassword(hashPassword(hashedPassword));
         return userRepository.save(user);
     }
 

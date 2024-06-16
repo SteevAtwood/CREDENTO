@@ -1,6 +1,5 @@
 package com.example.application.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import com.example.application.data.positionEnum.PositionEnum;
 
@@ -21,26 +20,21 @@ public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private PositionEnum position;
 
-    @JsonIgnore
     private String hashedPassword;
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
-    @Lob
-    @Column(length = 1000000)
-    private byte[] profilePicture;
 
     public User() {
     }
 
-    public User(String username, String name, PositionEnum position, String hashedPassword, Set<Role> roles,
-            byte[] profilePicture) {
+    public User(String username, String name, PositionEnum position, String hashedPassword, Set<Role> roles) {
         this.username = username;
         this.name = name;
         this.position = position;
         this.hashedPassword = hashedPassword;
         this.roles = roles;
-        this.profilePicture = profilePicture;
+
     }
 
     public Integer getId() {
@@ -85,14 +79,6 @@ public class User extends AbstractEntity {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public byte[] getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(byte[] profilePicture) {
-        this.profilePicture = profilePicture;
     }
 
 }
