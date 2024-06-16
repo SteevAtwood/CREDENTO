@@ -1,8 +1,12 @@
 package com.example.application.services;
 
 import com.example.application.data.User;
+import com.example.application.data.positionEnum.PositionEnum;
 import com.example.application.repository.UserRepository;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +21,37 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public User createUser(String username, String name, PositionEnum position, String hashedPassword) {
+        User user = new User();
+        user.setUsername(username);
+        user.setName(name);
+        user.setPosition(position);
+        user.setHashedPassword(hashPassword(user.getHashedPassword()));
+        return userRepository.save(user);
+    }
+
+    public String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Ошибка при хешировании пароля", e);
+        }
+    }
+
+    private String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 
     public User get(Integer id) {
@@ -68,11 +103,4 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    // public User getUserByName(String userName) {
-    // for (User user : userList) {
-    // if (user.getName().equals(userName)) {
-    // return user;
-    // }
-    // }
-    // return null;
 }

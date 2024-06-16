@@ -12,6 +12,7 @@ import com.example.application.views.policyholder.CreatePolicyholderView;
 import com.example.application.views.policyholder.PolicyholderView;
 import com.example.application.views.requests.CreateRequestView;
 import com.example.application.views.requests.RequestsView;
+import com.example.application.views.users.CreateUserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -116,6 +117,11 @@ public class MainLayout extends AppLayout {
             nav.addItem(
                     new SideNavItem("Список кредитных лимитов", RequestsView.class,
                             LineAwesomeIcon.ADDRESS_BOOK_SOLID.create()));
+        }
+        if (accessChecker.hasAccess(CreateUserView.class)) {
+            nav.addItem(
+                    new SideNavItem("Добавить пользователя", CreateUserView.class, LineAwesomeIcon.USER.create()));
+
         }
 
         // if (accessChecker.hasAccess(ClientView.class)) {
