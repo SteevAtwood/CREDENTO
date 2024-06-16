@@ -145,10 +145,10 @@ public class ContractDetailView extends VerticalLayout implements BeforeEnterObs
 
     private Button pendingCreditLimits() {
         Button button = new Button("Просмотреть заявки", event -> {
-            if (contract != null && contract.getInsuranceContractNumber() != null) {
-                String insuranceContractNumber = contract.getInsuranceContractNumber();
-                RouteParameters routeParameters = new RouteParameters("insuranceContractNumber",
-                        insuranceContractNumber);
+            if (contract != null && contract.getId() != null) {
+                Integer contractId = contract.getId();
+                RouteParameters routeParameters = new RouteParameters("contractNumberId",
+                        String.valueOf(contractId));
                 UI.getCurrent().navigate(RequestsPendingContractView.class, routeParameters);
             } else {
                 Notification.show("Регистрационный код компании не найден");

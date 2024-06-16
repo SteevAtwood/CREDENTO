@@ -30,6 +30,7 @@ import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -40,8 +41,10 @@ public class RequestsPendingView extends Div implements BeforeEnterObserver {
 
     private Grid<Request> grid;
     private Filters filters;
-    private final RequestService requestService;
-    private final DebtorService debtorService;
+    @Autowired
+    RequestService requestService;
+    @Autowired
+    DebtorService debtorService;
     private Integer debtorId;
 
     public RequestsPendingView(RequestService requestService, DebtorService debtorService) {
@@ -85,7 +88,8 @@ public class RequestsPendingView extends Div implements BeforeEnterObserver {
 
     public static class Filters extends Div implements Specification<Request> {
 
-        private final DebtorService debtorService;
+        @Autowired
+        DebtorService debtorService;
 
         private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
         private final TextField contractNumber = new TextField("Номер договора");

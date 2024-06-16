@@ -264,27 +264,37 @@ public class CreateContractView extends Composite<VerticalLayout> {
                     .map(Country::getName)
                     .collect(Collectors.toSet());
 
-            contractService.createContract(
-                    insuranceContractNumber.getValue(),
-                    insurer.getValue(),
-                    status.getValue(),
-                    DateConversionUtil.toLocalDate(startDate),
-                    DateConversionUtil.toLocalDate(endDate),
-                    selectedSupervisingUnderwriter,
-                    selectedSupervisingUOPBEmployee,
-                    selectedUnderwriter1,
-                    selectedUnderwriter2,
-                    selectedPolicyholder,
-                    countryNames,
-                    coveredRisks.getValue(),
-                    insuredSharePolitical.getValue().toString(),
-                    Integer.valueOf(waitingPeriodPolitical.getValue()),
-                    Integer.valueOf(maxPoliticalCreditPeriod.getValue()),
-                    insuredShareCommercial.getValue().toString(),
-                    Integer.valueOf(waitingPeriodCommercial.getValue()),
-                    Integer.valueOf(maxCommercialCreditPeriod.getValue()),
-                    clientName.getValue());
+            if (contractService.existsByInsuranceContractNumber(insuranceContractNumber.getValue())) {
+                Notification.show("Контракт с номером " + insuranceContractNumber.getValue()
+                        + " уже существует, невозможно создать дубликат");
+            } else {
+                try {
+                    contractService.createContract(
+                            insuranceContractNumber.getValue(),
+                            insurer.getValue(),
+                            status.getValue(),
+                            DateConversionUtil.toLocalDate(startDate),
+                            DateConversionUtil.toLocalDate(endDate),
+                            selectedSupervisingUnderwriter,
+                            selectedSupervisingUOPBEmployee,
+                            selectedUnderwriter1,
+                            selectedUnderwriter2,
+                            selectedPolicyholder,
+                            countryNames,
+                            coveredRisks.getValue(),
+                            insuredSharePolitical.getValue().toString(),
+                            Integer.valueOf(waitingPeriodPolitical.getValue()),
+                            Integer.valueOf(maxPoliticalCreditPeriod.getValue()),
+                            insuredShareCommercial.getValue().toString(),
+                            Integer.valueOf(waitingPeriodCommercial.getValue()),
+                            Integer.valueOf(maxCommercialCreditPeriod.getValue()),
+                            clientName.getValue());
 
+                    Notification.show("Контракт успешно создан");
+                } catch (IllegalArgumentException ex) {
+                    Notification.show("Ошибка при создании контракта");
+                }
+            }
         });
 
         buttonSecondary.addClickListener(e -> {

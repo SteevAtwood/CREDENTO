@@ -13,4 +13,7 @@ public interface ContractsRepository extends JpaRepository<Contract, Integer>, J
 
     Optional<Contract> findById(Long id);
 
+    Optional<Contract> findByInsuranceContractNumber(String insuranceContractNumber);
+
+    boolean existsByInsuranceContractNumber(String insuranceContractNumber);
 }

@@ -1,6 +1,9 @@
 package com.example.application.views.requests;
 
+import com.example.application.data.Debtors;
 import com.example.application.data.Request;
+import com.example.application.data.requestStatusEnum.RequestStatusEnum;
+import com.example.application.services.DebtorService;
 import com.example.application.services.RequestService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -9,7 +12,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -23,15 +26,16 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 @AnonymousAllowed
-@Route(value = "pending-contract-requests/:insuranceContractNumber", layout = MainLayout.class)
+@Route(value = "pending-contract-requests/:insuranceContractNumberId", layout = MainLayout.class)
 @Uses(Icon.class)
 public class RequestsPendingContractView extends Div implements BeforeEnterObserver {
 
@@ -39,19 +43,24 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
     private Filters filters;
     @Autowired
     RequestService requestService;
-    private String insuranceContractNumber;
+    @Autowired
+    DebtorService debtorService;
+    private Integer insuranceContractNumberId;
 
-    public RequestsPendingContractView(RequestService requestService) {
+    public RequestsPendingContractView(RequestService requestService, DebtorService debtorService) {
         this.requestService = requestService;
+        this.debtorService = debtorService;
+
         setSizeFull();
         addClassNames("requests-view");
 
-        filters = new Filters(() -> refreshGrid());
+        filters = new Filters(() -> refreshGrid(), debtorService);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);
+
     }
 
     private HorizontalLayout createMobileFilters() {
@@ -79,17 +88,31 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
 
     public static class Filters extends Div implements Specification<Request> {
 
+        @Autowired
+        DebtorService debtorService;
+
+        private final ComboBox<Debtors> debtor = new ComboBox<>("Дебитор");
         private final TextField insuranceContractNumber = new TextField("Номер договора");
         private final TextField debitorsCountry = new TextField("Страна дебитора");
         private final TextField registrationCode = new TextField("Регистрационный код");
-        private final TextField clAmount = new TextField("Сумма CL");
+        private final TextField clAmount = new TextField("Сумма");
+        private final TextField clTermsAndConditions = new TextField("Условия");
+        private final ComboBox<RequestStatusEnum> status = new ComboBox<>("Статус");
+        private final TextField adjustmentPossibility = new TextField("Возможность корректировки");
         private final ComboBox<String> clCurrency = new ComboBox<>("Валюта CL");
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, DebtorService debtorService) {
+            this.debtorService = debtorService;
+
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+
+            debtor.setItems(debtorService.getDebtors());
+            debtor.setItemLabelGenerator(Debtors::getCompanyName);
+
+            status.setItems(RequestStatusEnum.values());
 
             clCurrency.setItems("RUB", "USD", "EUR");
 
@@ -97,16 +120,21 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
             filterLayout.setSpacing(true);
             filterLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            filterLayout.add(insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency);
+            filterLayout.add(debtor, insuranceContractNumber, debitorsCountry, registrationCode, clAmount, clCurrency,
+                    clTermsAndConditions, status, adjustmentPossibility);
 
             Button resetBtn = new Button("Очистить");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
+                debtor.clear();
                 insuranceContractNumber.clear();
                 debitorsCountry.clear();
                 registrationCode.clear();
                 clAmount.clear();
                 clCurrency.clear();
+                clTermsAndConditions.clear();
+                status.clear();
+                adjustmentPossibility.clear();
                 onSearch.run();
             });
 
@@ -127,12 +155,15 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
         public Predicate toPredicate(Root<Request> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (debtor.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("debtor"), debtor.getValue()));
+            }
             if (!insuranceContractNumber.isEmpty()) {
                 String lowerCaseFilter = insuranceContractNumber.getValue().toLowerCase();
-                Predicate insuranceContractNumberMatch = criteriaBuilder.like(
+                Predicate contractNumberMatch = criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("insuranceContractNumber")),
                         lowerCaseFilter + "%");
-                predicates.add(insuranceContractNumberMatch);
+                predicates.add(contractNumberMatch);
             }
             if (!debitorsCountry.isEmpty()) {
                 String lowerCaseFilter = debitorsCountry.getValue().toLowerCase();
@@ -149,13 +180,33 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
                 predicates.add(registrationCodeMatch);
             }
             if (!clAmount.isEmpty()) {
-                BigDecimal amount = new BigDecimal(clAmount.getValue());
-                Predicate clAmountMatch = criteriaBuilder.equal(root.get("clAmount"), amount);
+                String lowerCaseFilter = clAmount.getValue().toLowerCase();
+                Predicate clAmountMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("clAmount")),
+                        lowerCaseFilter + "%");
                 predicates.add(clAmountMatch);
             }
-            if (clCurrency.getValue() != null) {
-                Predicate clCurrencyMatch = criteriaBuilder.equal(root.get("clCurrency"), clCurrency.getValue());
+            if (!clCurrency.isEmpty()) {
+                String lowerCaseFilter = clCurrency.getValue().toLowerCase();
+                Predicate clCurrencyMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("clCurrency")),
+                        lowerCaseFilter + "%");
                 predicates.add(clCurrencyMatch);
+            }
+            if (!clTermsAndConditions.isEmpty()) {
+                String lowerCaseFilter = clTermsAndConditions.getValue().toLowerCase();
+                Predicate clTermsAndConditionsMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("clTermsAndConditions")),
+                        lowerCaseFilter + "%");
+                predicates.add(clTermsAndConditionsMatch);
+            }
+            if (status.getValue() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status.getValue()));
+            }
+            if (!adjustmentPossibility.isEmpty()) {
+                String lowerCaseFilter = adjustmentPossibility.getValue().toLowerCase();
+                Predicate adjustmentPossibilityMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("adjustmentPossibility")),
+                        lowerCaseFilter + "%");
+                predicates.add(adjustmentPossibilityMatch);
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -164,20 +215,24 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
 
     private Component createGrid() {
         grid = new Grid<>(Request.class, false);
-        grid.addColumn("insuranceContractNumber").setAutoWidth(true).setHeader("Номер договора");
+        grid.addColumn(request -> request.getDebtor().getCompanyName())
+                .setAutoWidth(true)
+                .setHeader("Дебитор");
+        grid.addColumn(request -> request.getInsuranceContractNumber().getInsuranceContractNumber())
+                .setAutoWidth(true)
+                .setHeader("Номер договора");
         grid.addColumn("debitorsCountry").setAutoWidth(true).setHeader("Страна дебитора");
         grid.addColumn("registrationCode").setAutoWidth(true).setHeader("Регистрационный код");
-        grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма CL");
-        grid.addColumn("clCurrency").setAutoWidth(true).setHeader("Валюта CL");
-        grid.addColumn("clTermsAndConditions").setAutoWidth(true).setHeader("Условия CL");
+        grid.addColumn("clAmount").setAutoWidth(true).setHeader("Сумма");
+        grid.addColumn("clCurrency").setAutoWidth(true).setHeader("Валюта");
+        grid.addColumn("clTermsAndConditions").setAutoWidth(true).setHeader("Условия");
+        grid.addColumn("status").setAutoWidth(true).setHeader("Статус");
         grid.addColumn("adjustmentPossibility").setAutoWidth(true).setHeader("Возможность корректировки");
 
-        // grid.setItems(query ->
-        // requestService.getPendingRequestsByRegistrationCode(insuranceContractNumber,
-        // PageRequest.of(query.getPage(), query.getPageSize(),
-        // VaadinSpringDataHelpers.toSpringDataSort(query)))
-        // .stream());
-        // grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setItems(query -> requestService.getPendingRequestsByContract(insuranceContractNumberId,
+                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
+                .stream());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
         grid.addItemClickListener(event -> {
@@ -193,13 +248,32 @@ public class RequestsPendingContractView extends Div implements BeforeEnterObser
         grid.getDataProvider().refreshAll();
     }
 
+    // @Override
+    // public void beforeEnter(BeforeEnterEvent event) {
+    // debtorId =
+    // Integer.valueOf(event.getRouteParameters().get("debtorId").orElse("-1"));
+    // if (debtorId == -1) {
+    // Notification.show("Идентификатор дебитора не найден");
+    // } else {
+    // refreshGrid();
+    // }
+    // }
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        insuranceContractNumber = event.getRouteParameters().get("registrationCode").orElse("");
-        if (insuranceContractNumber.isEmpty()) {
-            Notification.show("Регистрационный код не найден");
+        String insuranceContractNumberIdString = event.getRouteParameters().get("insuranceContractNumberId")
+                .orElse(null);
+        if (insuranceContractNumberIdString != null && !insuranceContractNumberIdString.isEmpty()) {
+            try {
+                insuranceContractNumberId = Integer.valueOf(insuranceContractNumberIdString);
+                System.out.println("Contract number id check: " + insuranceContractNumberId);
+                refreshGrid();
+            } catch (NumberFormatException e) {
+                Notification.show("Ошибка при обработке идентификатора договора");
+            }
         } else {
-            refreshGrid();
+            Notification.show("Идентификатор договора не найден");
         }
     }
+
 }

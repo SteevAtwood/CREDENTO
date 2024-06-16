@@ -46,6 +46,12 @@ public class ContractService {
             Integer maxCommercialCreditPeriod,
             String clientName) {
 
+        Optional<Contract> existingContract = contractsRepository
+                .findByInsuranceContractNumber(insuranceContractNumber);
+        if (existingContract.isPresent()) {
+            return null;
+        }
+
         Contract contract = new Contract();
         contract.setInsuranceContractNumber(insuranceContractNumber);
         contract.setInsurer(insurer);
@@ -71,6 +77,10 @@ public class ContractService {
         contract.setClientName(clientName);
 
         return contractsRepository.save(contract);
+    }
+
+    public boolean existsByInsuranceContractNumber(String insuranceContractNumber) {
+        return contractsRepository.existsByInsuranceContractNumber(insuranceContractNumber);
     }
 
     public Page<Contract> list(Pageable pageable) {
